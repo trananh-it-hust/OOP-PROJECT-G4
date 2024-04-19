@@ -10,10 +10,10 @@ class MyHttpRequestHandler(SimpleHTTPRequestHandler):
         # Lấy các tham số truy vấn dưới dạng từ điển
         
         query_params = parse_qs(parsed_path.query)
-        try:
+        
             # Xử lý yêu cầu GET dựa trên đường dẫn
-            if parsed_path.path == '/':
-                # Lấy dữ liệu từ tham số 'name' nếu có
+        if parsed_path.path == '/':
+            try:    # Lấy dữ liệu từ tham số 'name' nếu có
                 tu_khoa = query_params.get('data', [''])[0]  # Trả về chuỗi rỗng nếu không tìm thấy 'name'
                 print(tu_khoa)
                 # Xử lý dữ liệu
@@ -116,16 +116,16 @@ class MyHttpRequestHandler(SimpleHTTPRequestHandler):
 
                 # Gửi chuỗi JSON
                 self.wfile.write(json_string.encode('utf-8'))
-        except json.JSONDecodeError as e:
+            except json.JSONDecodeError as e:
             # Gửi phản hồi lỗi nếu dữ liệu không phải là JSON hợp lệ
-            self.send_response(400)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            response = {
-                "status": "error",
-                "message": "Dữ liệu không phải là JSON hợp lệ: " + str(e)
-            }
-            self.wfile.write(json.dumps(response).encode('utf-8'))
+                self.send_response(400)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                response = {
+                    "status": "error",
+                    "message": "Dữ liệu không phải là JSON hợp lệ: " + str(e)
+                }
+                self.wfile.write(json.dumps(response).encode('utf-8'))
 # Thiết lập địa chỉ và cổng cho server
 hostName = "localhost"
 serverPort = 8000
