@@ -21,3 +21,5 @@ build/
 
 # VS Code files #
 .vscode/
+
+_pychache_
