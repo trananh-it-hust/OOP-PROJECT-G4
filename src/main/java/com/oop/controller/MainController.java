@@ -1,8 +1,12 @@
 package com.oop.controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import com.oop.model.Item;
 import com.oop.model.SearchModel;
@@ -13,9 +17,11 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -23,11 +29,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class MainController {
+public class MainController implements Initializable {
 
     @FXML
     private TextField searchField;
-
+    @FXML
+    private ChoiceBox<String> choiceBox;
+    String[] Criteria = {"Ngày đăng giảm dần"};
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -109,5 +117,25 @@ public class MainController {
                 }
             }
         });
+    }
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        choiceBox.getItems().addAll(Criteria);
+        choiceBox.setOnAction(this::setChoice);
+    }
+    public void setChoice(ActionEvent event){
+        String choiceChoosen = choiceBox.getValue();
+        //Handle the chosen criteria
+        if(choiceChoosen.equals("Ngày đăng giảm dần")){
+            //gọi phương thức filterByUpdateDateDescending với tham số là List Item đọc từ file
+        }
+    }
+    public List<Item> filterByUpdateDateDescending(List<Item> itemList) {
+        Comparator<Item> dateComparator = Comparator.comparing(Item::getCreationDate).reversed();
+
+        // Sắp xếp danh sách theo thứ tự giảm dần của ngày cập nhật
+        Collections.sort(itemList, dateComparator);
+
+        return itemList;
     }
 }
