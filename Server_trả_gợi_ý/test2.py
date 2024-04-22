@@ -118,9 +118,9 @@ class MyHttpRequestHandler(SimpleHTTPRequestHandler):
 
                 # Gửi chuỗi JSON
                 self.wfile.write(json_string.encode('utf-8'))
-                end_time = time.time()
-                elapsed_time = end_time - start_time
-                print(elapsed_time)
+                # end_time = time.time()
+                # elapsed_time = end_time - start_time
+                # print(elapsed_time)
             except json.JSONDecodeError as e:
             # Gửi phản hồi lỗi nếu dữ liệu không phải là JSON hợp lệ
                 self.send_response(400)
