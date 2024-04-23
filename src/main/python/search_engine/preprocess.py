@@ -32,12 +32,13 @@ class Preprocessor():
         # Loại bỏ khoảng trắng và chuỗi trống sau khi tách
         words = [' '.join(word.split()) for word in words]
         words = [word.strip() for word in words if word.strip()]
+
         # Kết hợp các từ thành một chuỗi
         text = " ".join(words)
-
+        text = text.replace('-', ' ') # thay dấu - giữa các từ thành space
         text = text.lower()  # Chuyển đổi về chữ thường
         text = re.sub(r'[^\w\s]', '', text)  # Loại bỏ dấu câu
-
+        
         return text
 
     def split_numbers_from_characters(self, text):
@@ -65,7 +66,6 @@ class Preprocessor():
         text = self.remove_stopwords(text=text)
         text = self.lemmatize_text(text=text)
 
-        # Kết hợp các từ thành một chuỗi
 
         return text
 
@@ -102,11 +102,11 @@ class Preprocessor():
         
         if date_phrases:
             return max(date_phrases) #trả về date gần đây nhất
-        
+            
         return None
 
 
 # if __name__ == '__main__':
-    
+#     text = 'merry-go-round, nice-job'
 #     preprocess = Preprocessor()
 #     print(preprocess.preprocess_text(text=text))
