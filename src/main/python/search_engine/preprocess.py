@@ -4,8 +4,23 @@ import json
 import spacy
 from spacy.matcher import Matcher
 from dateutil.parser import parse
+import os
 
+original_dir = os.getcwd()
+def find_search_engine_path():
+    # Lấy đường dẫn tuyệt đối của thư mục hiện tại
+    current_directory = os.getcwd()
 
+    # Duyệt qua tất cả các thư mục và tệp tin trong cây thư mục bắt đầu từ thư mục hiện tại
+    for dirpath, dirnames, filenames in os.walk(current_directory):
+        # Kiểm tra xem thư mục hiện tại có tên là "search_engine" không
+        if "search_engine" in dirnames:
+            return os.path.join(dirpath, "search_engine")
+        
+    # Trả về None nếu không tìm thấy thư mục "search_engine" trong cây thư mục
+    return None
+
+os.chdir(find_search_engine_path())
 
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
@@ -20,6 +35,8 @@ with open('../../resources/assets/stopwords.txt') as file:
 with open('../../resources/assets/lemmatization-en.json') as file:
     lemmatizer = json.load(file)
 
+os.chdir(original_dir)
+
 class Preprocessor():
 
     def __init__(self) -> None:
@@ -32,12 +49,13 @@ class Preprocessor():
         # Loại bỏ khoảng trắng và chuỗi trống sau khi tách
         words = [' '.join(word.split()) for word in words]
         words = [word.strip() for word in words if word.strip()]
+
         # Kết hợp các từ thành một chuỗi
         text = " ".join(words)
-
+        text = text.replace('-', ' ') # thay dấu - giữa các từ thành space
         text = text.lower()  # Chuyển đổi về chữ thường
         text = re.sub(r'[^\w\s]', '', text)  # Loại bỏ dấu câu
-
+        
         return text
 
     def split_numbers_from_characters(self, text):
@@ -65,7 +83,6 @@ class Preprocessor():
         text = self.remove_stopwords(text=text)
         text = self.lemmatize_text(text=text)
 
-        # Kết hợp các từ thành một chuỗi
 
         return text
 
@@ -102,11 +119,11 @@ class Preprocessor():
         
         if date_phrases:
             return max(date_phrases) #trả về date gần đây nhất
-        
+            
         return None
 
 
 # if __name__ == '__main__':
-    
+#     text = 'merry-go-round, nice-job'
 #     preprocess = Preprocessor()
 #     print(preprocess.preprocess_text(text=text))
