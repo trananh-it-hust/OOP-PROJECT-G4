@@ -1,91 +1,52 @@
-from preprocess import Preprocessor
+from .query_handler import QueryHandler
 
-import pandas as pd # type: ignore
-from sklearn.metrics.pairwise import cosine_similarity
-from joblib import load
-import Levenshtein
-from sklearn.feature_extraction.text import TfidfVectorizer
+from http.server import BaseHTTPRequestHandler
 import json
 
-preprocessor = Preprocessor()
-relative_path = "../../resources/data/data.csv"
-df = pd.read_csv(relative_path)
+from urllib.parse import urlparse, parse_qs
+import time
 
-tfidf_matrix = load("models/tfidf/tfidf_matrix.joblib")
-vectorizer = load("models/tfidf/vectorizer.joblib")
+query_handler = QueryHandler()
 
-class Query:
-    def __init__(self) -> None:
-        return None;
-
-    def find_closest_word(self, word, model=vectorizer, model_name='Tfidf'):
-        if model_name == 'Doc2Vec':
-            vocab = model.wv.key_to_index
-        elif model_name == 'Tfidf':
-            vocab = model.vocabulary_
-        try:
-            # Kiểm tra xem từ có trong từ điển không
-            if word in vocab:
-                return word
-            else:
-                # Tìm từ gần nhất trong từ điển sử dụng Levenshtein distance
-                closest_word = min(vocab, key=lambda x: Levenshtein.distance(word, x))
-                return closest_word
-    
-        except KeyError:
-            # Trong trường hợp từ không tồn tại trong vocab
-            return None
-
-    def preprocess_query(self, query):
-        query = preprocessor.preprocess_text(query)
-        query = ' '.join(self.find_closest_word(word=word) for word in query.split())
+class QueryAPIHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        # Phân tích URL
+        parsed_path = urlparse(self.path)
+        # Lấy các tham số truy vấn dưới dạng từ điển
         
-        return query;
+        query_params = parse_qs(parsed_path.query)
+        
+            # Xử lý yêu cầu GET dựa trên đường dẫn
+        if parsed_path.path == '/search':
+            start_time = time.time()
 
-    def query(self, query, model_name='Tfidf'):
+            try:    # Lấy dữ liệu từ tham số 'q' nếu có
+                query = query_params.get('q', [''])[0]  # Trả về chuỗi rỗng nếu không tìm thấy 'q'
+                print(query)
+                
+                
+                # Xử lý dữ liệu
+                response = query_handler.query(query)
 
-        preprocessed_query = self.preprocess_query(query=query)
-        if model_name == 'Tfidf':
+                # Gửi phản hồi HTTP
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
 
-            query_vector = vectorizer.transform([preprocessed_query])
-            similarities = cosine_similarity(query_vector, tfidf_matrix)
+                # Gửi chuỗi JSON
+                self.wfile.write(response.encode('utf-8'))
+                # end_time = time.time()
+                # elapsed_time = end_time - start_time
+                # print(elapsed_time)
 
-        # Bước 6: Sắp xếp và hiển thị kết quả
-        results = []
-        for idx, sim in enumerate(similarities[0]):
-            if sim > 0.1:
-                result = {
-                    "article": {
-                        "Article link": df.iloc[idx]['Article link'],
-                        "Website source": df.iloc[idx][' Website source'],
-                        "Article type": df.iloc[idx][' Article type'],
-                        "Article title": df.iloc[idx][' Article title'],
-                        "Content": df.iloc[idx][' Content'],
-                        "Creation date": df.iloc[idx][' Creation date'],
-                        "Author": df.iloc[idx][' Author'],
-                        "Tags": df.iloc[idx][' Tags'],
-                        "Category": df.iloc[idx][' Category'],
-                        "Summary": df.iloc[idx][' Summary']
-                    },
-                    "similarity score": sim,
-                    
+            except json.JSONDecodeError as e:
+            # Gửi phản hồi lỗi nếu dữ liệu không phải là JSON hợp lệ
+                self.send_response(400)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                response = {
+                    "status": "error",
+                    "message": "Dữ liệu không phải là JSON hợp lệ: " + str(e)
                 }
-                results.append(result)
+                self.wfile.write(json.dumps(response).encode('utf-8'))
 
-
-        results.sort(key=lambda x: x['similarity score'], reverse=True)
-
-        response = {
-            "query": query,
-            "results": results,
-            "sugggested query": preprocessed_query,
-            "isNull": (len(results) == 0)
-        }
-
-        return json.dumps(response)
-
-    
-
-
-    
-    
