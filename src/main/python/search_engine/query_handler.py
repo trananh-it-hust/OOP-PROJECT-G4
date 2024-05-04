@@ -5,6 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from joblib import load
 import Levenshtein
 from sklearn.feature_extraction.text import TfidfVectorizer
+from txtai.embeddings import Embeddings
 import json
 import os
 
@@ -33,6 +34,9 @@ df = pd.read_csv(relative_path)
 #đọc tfidf
 tfidf_matrix = load("models/tfidf/tfidf_matrix.joblib")
 vectorizer = load("models/tfidf/vectorizer.joblib")
+#đọc txtai
+embeddings = Embeddings()
+embeddings.load('models/txtai_embeddings.model')
 # về thư mục gốc
 os.chdir(original_dir)
 
@@ -40,43 +44,51 @@ class QueryHandler:
     def __init__(self) -> None:
         return None;
 
-    def find_closest_word(self, word, model=vectorizer, model_name='Tfidf'):
-        if model_name == 'Doc2Vec':
-            vocab = model.wv.key_to_index
-        elif model_name == 'Tfidf':
+    def find_closest_word(self, word, model_name='Tfidf'):
+        if model_name == 'Tfidf':
+            model = vectorizer
             vocab = model.vocabulary_
-        try:
-            # Kiểm tra xem từ có trong từ điển không
-            if word in vocab:
-                return word
-            else:
-                # Tìm từ gần nhất trong từ điển sử dụng Levenshtein distance
-                closest_word = min(vocab, key=lambda x: Levenshtein.distance(word, x))
-                return closest_word
-    
-        except KeyError:
-            # Trong trường hợp từ không tồn tại trong vocab
-            return None
+        
+            try:
+                # Kiểm tra xem từ có trong từ điển không
+                if word in vocab:
+                    return word
+                else:
+                    # Tìm từ gần nhất trong từ điển sử dụng Levenshtein distance
+                    closest_word = min(vocab, key=lambda x: Levenshtein.distance(word, x))
+                    return closest_word
+        
+            except KeyError:
+                # Trong trường hợp từ không tồn tại trong vocab
+                return None
+        elif model_name == 'TxtAI':
+            return word
 
-    def preprocess_query(self, query):
+    def preprocess_query(self, query, model_name='Tfidf'):
         query = preprocessor.preprocess_text(query)
-        query = ' '.join(self.find_closest_word(word=word) for word in query.split())
+        query = ' '.join(self.find_closest_word(word=word, model_name=model_name) for word in query.split())
         
         return query;
 
     def query(self, query, model_name='Tfidf'):
 
-        preprocessed_query = self.preprocess_query(query=query)
+        preprocessed_query = self.preprocess_query(query=query, model_name=model_name)
         if model_name == 'Tfidf':
 
             query_vector = vectorizer.transform([preprocessed_query])
-            similarities = cosine_similarity(query_vector, tfidf_matrix)
+            similarities = cosine_similarity(query_vector, tfidf_matrix)[0]
+            similarities = list(zip(range(len(similarities)), similarities)) #chuyển về tuple
+
+        
+        elif model_name == 'TxtAI':
+            similarities = embeddings.search(preprocessed_query)
 
         # Bước 6: Sắp xếp và hiển thị kết quả
         results = []
-        for idx, sim in enumerate(similarities[0]):
+        for idx, sim in similarities:
             if sim > 0.1:
                 result = {
+                    "similarity score": sim,
                     "article": {
                         "Article link": df.iloc[idx]['Article link'],
                         "Website source": df.iloc[idx][' Website source'],
@@ -88,8 +100,8 @@ class QueryHandler:
                         "Tags": df.iloc[idx][' Tags'],
                         "Category": df.iloc[idx][' Category'],
                         "Summary": df.iloc[idx][' Summary']
-                    },
-                    "similarity score": sim,
+                    }
+
                     
                 }
                 results.append(result)
@@ -99,12 +111,13 @@ class QueryHandler:
 
         response = {
             "query": query,
-            "results": results,
             "sugggested query": preprocessed_query,
-            "isNull": (len(results) == 0)
+            "isNull": (len(results) == 0),
+            "results": results,
         }
 
         return json.dumps(response)
+
 
     
 
