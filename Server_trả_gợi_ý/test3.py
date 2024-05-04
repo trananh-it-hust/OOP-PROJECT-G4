@@ -24,15 +24,12 @@ class MyHttpRequestHandler(SimpleHTTPRequestHandler):
                     }
                     # Chuyển đổi dữ liệu thành chuỗi JSON
                     json_string = json.dumps(data)
-
                     # Gửi phản hồi HTTP
                     self.send_response(200)
                     self.send_header('Content-type', 'application/json')
                     self.end_headers()
-
                     # Gửi chuỗi JSON
                     self.wfile.write(json_string.encode('utf-8'))
-
                 # Xử lý dữ liệu
                 ket_qua_tim_kiem = []
                 link = [] # Danh sách để lưu trữ các hàng tìm thấy
@@ -62,8 +59,7 @@ class MyHttpRequestHandler(SimpleHTTPRequestHandler):
                             else:
                                 ket_qua_tim_kiem.append(row_ug)
                         if len(ket_qua_tim_kiem)>5:
-                            break    
-                
+                            break                
                 if len(ket_qua_tim_kiem) < 5 and time.time()-start_time<0.5:
                     with open('data.csv', mode='r', encoding='utf-8') as file:
                         csv_file = csv.reader(file)
@@ -146,7 +142,8 @@ class MyHttpRequestHandler(SimpleHTTPRequestHandler):
                     "message": "Dữ liệu không phải là JSON hợp lệ: " + str(e)
                 }
                 self.wfile.write(json.dumps(response).encode('utf-8'))
-                
+       # if parsed_path.path == '/discovered_objects':
+
                 
 # Thiết lập địa chỉ và cổng cho server
 hostName = "localhost"
