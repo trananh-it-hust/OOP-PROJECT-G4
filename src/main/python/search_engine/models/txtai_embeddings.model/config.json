@@ -1,0 +1,17 @@
+{
+  "path": "sentence-transformers/all-MiniLM-L6-v2",
+  "autoid": 8334,
+  "dimensions": 384,
+  "backend": "faiss",
+  "offset": 8334,
+  "build": {
+    "create": "2024-05-04T21:15:34Z",
+    "python": "3.10.14",
+    "settings": {
+      "components": "IVF213,Flat"
+    },
+    "system": "Windows (AMD64)",
+    "txtai": "7.1.0"
+  },
+  "update": "2024-05-04T21:15:34Z"
+}

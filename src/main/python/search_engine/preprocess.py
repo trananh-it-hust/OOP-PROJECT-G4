@@ -11,9 +11,13 @@ def find_search_engine_path():
     # Lấy đường dẫn tuyệt đối của thư mục hiện tại
     current_directory = os.getcwd()
 
+    # Kiểm tra xem thư mục hiện tại có tên là "search_engine" không
+    # if os.path.basename(current_directory) == "search_engine":
+    #     return current_directory
+
     # Duyệt qua tất cả các thư mục và tệp tin trong cây thư mục bắt đầu từ thư mục hiện tại
     for dirpath, dirnames, filenames in os.walk(current_directory):
-        # Kiểm tra xem thư mục hiện tại có tên là "search_engine" không
+        # Kiểm tra xem có thư mục "search_engine" trong danh sách thư mục không
         if "search_engine" in dirnames:
             return os.path.join(dirpath, "search_engine")
         
@@ -83,11 +87,13 @@ class Preprocessor():
         text = self.remove_stopwords(text=text)
         text = self.lemmatize_text(text=text)
 
+        text = str(text)
 
         return text
 
     #tiền xử lý date
     def preprocess_date(self, text):
+        text = str(text)
         doc = nlp(text)
         date_phrases = [] # mảng chứa các date
         current_phrase = []
