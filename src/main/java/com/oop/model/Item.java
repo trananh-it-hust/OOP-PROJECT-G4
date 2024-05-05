@@ -1,7 +1,6 @@
 package com.oop.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javafx.scene.layout.VBox;
@@ -12,7 +11,7 @@ public class Item {
     private String articleType;
     private String articleTitle;
     private String content;
-    private Date creationDate;
+    private String creationDate;
     private String author;
     private String category;
     private String tags;
@@ -24,7 +23,7 @@ public class Item {
     }
 
     public Item(String articleLink, String websiteSource, String articleType, String articleTitle,
-            String content, Date creationDate, String author, String category, String tags,
+            String content, String creationDate, String author, String category, String tags,
             String summary) {
         this.articleLink = articleLink;
         this.websiteSource = websiteSource;
@@ -91,11 +90,11 @@ public class Item {
         this.content = content;
     }
 
-    public Date getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
