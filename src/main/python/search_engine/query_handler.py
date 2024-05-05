@@ -42,7 +42,7 @@ os.chdir(original_dir)
 
 class QueryHandler:
     def __init__(self) -> None:
-        return None;
+        return None
 
     def find_closest_word(self, word, model_name='Tfidf'):
         if model_name == 'Tfidf':
@@ -68,7 +68,7 @@ class QueryHandler:
         query = preprocessor.preprocess_text(query)
         query = ' '.join(self.find_closest_word(word=word, model_name=model_name) for word in query.split())
         
-        return query;
+        return query
 
     def query(self, query, model_name='Tfidf'):
 
