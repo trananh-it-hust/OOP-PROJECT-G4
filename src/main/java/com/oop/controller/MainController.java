@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.parser.ParseException;
+
 import com.oop.model.APICaller;
 
 import javafx.event.Event;
@@ -95,7 +97,7 @@ public class MainController {
                     List<String> suggestionsResults = new ArrayList<String>();
                     try {
                         suggestionsResults = APICaller.querySuggest(searchQuery);
-                    } catch (URISyntaxException | IOException e) {
+                    } catch (URISyntaxException | IOException | ParseException e) {
                         e.printStackTrace();
                     }
                     try {
