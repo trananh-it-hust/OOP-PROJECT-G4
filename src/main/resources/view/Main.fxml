@@ -26,5 +26,10 @@
          </font>
       </Text>
       <VBox fx:id="suggestions" layoutX="173.0" layoutY="216.0" prefHeight="108.0" prefWidth="207.0" />
+      <VBox fx:id="infoData" layoutX="173.0" layoutY="233.0" prefHeight="97.0" prefWidth="207.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#switchToDetail" text="More" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

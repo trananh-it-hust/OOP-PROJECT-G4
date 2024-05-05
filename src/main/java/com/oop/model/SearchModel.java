@@ -11,7 +11,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class SearchModel {
+
     public static List<Item> searchByTitle(List<Item> items, String keyword) {
+
         List<Item> searchResults = new ArrayList<>();
         for (Item item : items) {
             if (item.getArticleTitle().toLowerCase().contains(keyword.toLowerCase())) {
@@ -22,7 +24,7 @@ public class SearchModel {
     }
 
     public static List<String> GetSuggestion(String keyword) {
-                        //from suggestion.json
+        // from suggestion.json
 
         List<String> suggestions = new ArrayList<>();
         Object obj = null;
@@ -35,7 +37,7 @@ public class SearchModel {
         JSONArray ja = (JSONArray) jo.get("du_lieu");
 
         for (int i = 0; i < ja.size(); i++) {
-            suggestions.add((String)ja.get(i));
+            suggestions.add((String) ja.get(i));
         }
 
         return suggestions;
