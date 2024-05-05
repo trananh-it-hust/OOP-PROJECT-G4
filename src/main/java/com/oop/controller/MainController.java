@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
+
 import com.oop.model.Item;
 import com.oop.model.SearchModel;
 import com.opencsv.exceptions.CsvValidationException;
@@ -28,12 +29,23 @@ public class MainController {
     @FXML
     private TextField searchField;
 
+    @FXML
+    private VBox infoData;
+
     private Stage stage;
     private Scene scene;
     private Parent root;
 
     public void switchToMain(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/view/Main.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void switchToDetail(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("/view/Detail.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -62,6 +74,7 @@ public class MainController {
         return searchResults;
     }
 
+    @FXML
     public void addSuggestions(List<String> suggestions) throws IOException {
         VBox suggestionsBox;
         if (scene != null) {
@@ -82,7 +95,21 @@ public class MainController {
         }
     }
 
-    public void initialize() {
+    public void getInfoData() throws CsvValidationException, IOException, ParseException {
+        List<Item> items = Item.readItemsFromCSV();
+        int artTypeNewsArticleCount = 0;
+        for (Item item : items) {
+            if (item.getArticleType().equals("News Article")) {
+                artTypeNewsArticleCount++;
+            }
+        }
+        Label infoLabel = new Label("Number of items: " + items.size());
+        Label newsArticleLabel = new Label("Number of News Articles: " + artTypeNewsArticleCount);
+        infoData.getChildren().add(infoLabel);
+        infoData.getChildren().add(newsArticleLabel);
+    }
+
+    public void initialize() throws CsvValidationException, IOException, ParseException {
         // Thêm lắng nghe sự kiện cho TextField khi scene được tạo
         searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -109,5 +136,7 @@ public class MainController {
                 }
             }
         });
+        // Thêm lắng nghe sự kiện cho Pane khi scene được tạo
+        // getInfoData();
     }
 }
