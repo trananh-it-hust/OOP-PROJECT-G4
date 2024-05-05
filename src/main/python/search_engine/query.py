@@ -49,4 +49,4 @@ class QueryAPIHandler(BaseHTTPRequestHandler):
                     "message": "Dữ liệu không phải là JSON hợp lệ: " + str(e)
                 }
                 self.wfile.write(json.dumps(response).encode('utf-8'))
-
+        
