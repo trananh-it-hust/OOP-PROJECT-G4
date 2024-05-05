@@ -4,7 +4,7 @@ import json
 from urllib.parse import urlparse, parse_qs
 import csv
 import time
-from handle_time import handle_time
+from .handle_time import handle_time
 class MyHttpRequestHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         # Phân tích URL
@@ -151,16 +151,16 @@ class MyHttpRequestHandler(SimpleHTTPRequestHandler):
                 
                 
 # Thiết lập địa chỉ và cổng cho server
-hostName = "localhost"
-serverPort = 8000
+# hostName = "localhost"
+# serverPort = 8000
 
-# Tạo server HTTP
-if __name__ == "__main__":
-    webServer = HTTPServer((hostName, serverPort), MyHttpRequestHandler)
-    print("Server đã bắt đầu tại http://%s:%s" % (hostName, serverPort))
+# # Tạo server HTTP
+# if __name__ == "__main__":
+#     webServer = HTTPServer((hostName, serverPort), MyHttpRequestHandler)
+#     print("Server đã bắt đầu tại http://%s:%s" % (hostName, serverPort))
 
-    # Chạy server mãi mãi cho đến khi nhận được tín hiệu ngắt
-    try:
-        webServer.serve_forever()
-    except KeyboardInterrupt:
-        pass
+#     # Chạy server mãi mãi cho đến khi nhận được tín hiệu ngắt
+#     try:
+#         webServer.serve_forever()
+#     except KeyboardInterrupt:
+#         pass
