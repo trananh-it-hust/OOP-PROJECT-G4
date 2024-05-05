@@ -1,20 +1,9 @@
 package com.oop.model;
 
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.Reader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.exceptions.CsvValidationException;
-
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class Item {
@@ -50,43 +39,18 @@ public class Item {
     }
 
     // get data
-    public static List<Item> readItemsFromCSV()
-            throws IOException, ParseException, CsvValidationException {
+    public static List<Item> readItemsFromCSV() {
         List<Item> items = new ArrayList<>();
-
-        Reader reader = new FileReader("src/main/resources/data/data.csv");
-        CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build(); // Bỏ qua dòng tiêu đề
-
-        String[] nextRecord;
-        while ((nextRecord = csvReader.readNext()) != null) {
-            String articleLink = nextRecord[0];
-            String websiteSource = nextRecord[1];
-            String articleType = nextRecord[2];
-            String articleTitle = nextRecord[3];
-            String content = nextRecord[4];
-            Date creationDate = new SimpleDateFormat("MMMM dd, yyyy, h:mma z", Locale.ENGLISH).parse(nextRecord[5]);
-            String author = nextRecord[6];
-            String category = nextRecord[7];
-            String tags = nextRecord[8];
-            String summary = nextRecord[9];
-
-            Item item = new Item(articleLink, websiteSource, articleType, articleTitle, content,
-                    creationDate, author, category, tags, summary);
-            items.add(item);
-        }
-        csvReader.close();
         return items;
     }
 
     // Phương thức render ra UI cho một mục
-    public static VBox renderUI(Item item) {
+    public static VBox createItemUI(Item item) {
         VBox itemUI = new VBox();
-        Label titleLabel = new Label("Title: " + item.articleTitle);
-        itemUI.getChildren().add(titleLabel);
         return itemUI;
     }
-    // Getters and setters for all properties
 
+    // Getters and setters for all properties
     public String getArticleLink() {
         return articleLink;
     }
