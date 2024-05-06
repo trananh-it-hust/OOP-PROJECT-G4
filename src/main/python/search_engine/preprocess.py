@@ -39,6 +39,9 @@ with open('../../resources/assets/stopwords.txt') as file:
 with open('../../resources/assets/lemmatization-en.json') as file:
     lemmatizer = json.load(file)
 
+with open('../../resources/assets/contractions.txt') as file:
+    contractions = file.read().splitlines()
+
 os.chdir(original_dir)
 
 class Preprocessor():
@@ -61,6 +64,9 @@ class Preprocessor():
         text = re.sub(r'[^\w\s]', '', text)  # Loại bỏ dấu câu
         
         return text
+    
+    def remove_contractions(self, text):
+        return ' '.join(word for word in text.split() if word not in contractions)
 
     def split_numbers_from_characters(self, text):
         parts = re.split('(\d+)', text)
@@ -81,6 +87,7 @@ class Preprocessor():
         return ' '.join([lemmatizer.get(word, word) for word in text.split()])
 
     def preprocess_text(self,text):
+        text = self.remove_contractions(text=text)
         text = self.clean_text(text=text)
         text = self.split_numbers_from_characters(text)
 
