@@ -29,9 +29,6 @@ public class Main extends Application {
             // set the icon
             primaryStage.getIcons().add(new javafx.scene.image.Image("/image/icon.png"));
 
-            // add the stylesheet
-            primaryStage.getScene().getStylesheets().add("/styles/Main.css");
-
             // show the GUI
             primaryStage.show();
 
