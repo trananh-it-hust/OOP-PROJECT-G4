@@ -38,7 +38,7 @@ public class MainController {
 
     public void switchToSearchResults(Event event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
-        Parent root = loader.load(); // Load content from SearchResults.fxml
+        root = loader.load(); // Load content from SearchResults.fxml
         SearchController searchController = loader.getController();
         String searchText = searchField.getText(); // Lấy nội dung của TextField
         searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
