@@ -45,7 +45,7 @@ public class SearchController implements Initializable {
     private VBox suggestions;
 
     @FXML
-    private VBox searchResult;
+    private VBox searchResults;
     @FXML
     private Button nextPage;
     @FXML
@@ -72,12 +72,6 @@ public class SearchController implements Initializable {
     // Danh sách các mục được trả về từ API
     private ArrayList<Item> itemList;
     static private int countPageNumber = 1;
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Thêm các tiêu chí sắp xếp vào ChoiceBox
-        categorySort.setItems(criteriaList);
-    }
 
     // Xử lý sự kiện khi lựa chọn tiêu chí sắp xếp thay đổi
     public void setChoice(ActionEvent event) {
@@ -179,17 +173,17 @@ public class SearchController implements Initializable {
     }
 
     // Thêm kết quả tìm kiếm
-    private void addSearchResult(ArrayList<Item> itemList) {
-        searchResult.getChildren().clear(); // Xóa kết quả tìm kiếm trước đó
+    private void addSearchResult(List<Item> itemList) {
+        searchResults.getChildren().clear(); // Xóa kết quả tìm kiếm trước đó
         int startIndex = 10 * (countPageNumber - 1);
-        int endIndex = Math.min(10 * countPageNumber, itemList.size()); // Đảm bảo không vượt quá số lượng mục trong itemList
+        int endIndex = Math.min(10 * countPageNumber, itemList.size()); // Đảm bảo không vượt quá số lượng mục trong
+                                                                        // itemList
         for (int i = startIndex; i < endIndex; i++) {
             // Tạo giao diện cho mỗi mục kết quả tìm kiếm
             VBox itemNode = createItemNode(itemList.get(i));
-            searchResult.getChildren().add(itemNode);
+            searchResults.getChildren().add(itemNode);
         }
     }
-
 
     // Tạo giao diện cho mỗi mục kết quả tìm kiếm
     private VBox createItemNode(Item item) {
@@ -243,8 +237,21 @@ public class SearchController implements Initializable {
         }
     }
 
+    // Lấy data sear
+    public void getData() throws ParseException, IOException, URISyntaxException {
+        List<Item> resultSearch = APICaller.getSearchResult("BL");
+        addSearchResult(resultSearch);
+    }
+
     // Xử lý sự kiện khi ô tìm kiếm được sử dụng
-    public void initialize() {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println("1st");
+        categorySort.setItems(criteriaList);
+        try {
+            getData();
+        } catch (ParseException | IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
         searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
