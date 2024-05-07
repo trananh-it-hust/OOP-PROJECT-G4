@@ -9,9 +9,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@/styles/SearchResults.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.SearchController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.SearchController">
    <children>
-      <VBox fx:id="searchResults" layoutX="13.0" layoutY="66.0" prefHeight="324.0" prefWidth="568.0" />
       <TextField fx:id="searchField" layoutX="72.0" layoutY="14.0" prefHeight="32.0" prefWidth="203.0" />
       <VBox fx:id="suggestions" layoutX="72.0" layoutY="46.0" prefHeight="96.0" prefWidth="203.0" />
       <Button layoutX="280.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchToSearchResults">
@@ -24,5 +23,20 @@
          </graphic></Button>
       <Button layoutX="23.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchToMain" prefHeight="32.0" prefWidth="40.0" />
       <Line endX="421.5999755859375" endY="-1.1444091796875E-5" layoutX="136.0" layoutY="61.0" startX="-100.0" />
+      <VBox fx:id="searchResults" layoutX="13.0" layoutY="30.0" prefHeight="239.0" prefWidth="568.0" />
+      <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="340.0" layoutY="18.0" prefWidth="150.0" />
+      <VBox id="searchResult" layoutX="11.0" layoutY="75.0" prefHeight="311.0" prefWidth="568.0" />
+      <Button id="nextPage" layoutX="546.0" layoutY="14.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="40.0" />
+      <ImageView fitHeight="25.0" fitWidth="24.0" layoutX="554.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../image/icons-next-page.png" />
+         </image>
+      </ImageView>
+      <Button id="prevPage" layoutX="500.0" layoutY="15.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="40.0" />
+      <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="30.0" layoutY="17.0">
+         <image>
+            <Image url="@../image/icons8-back-50.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
