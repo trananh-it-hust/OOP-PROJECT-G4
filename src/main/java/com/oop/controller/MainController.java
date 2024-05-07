@@ -32,13 +32,16 @@ public class MainController {
 
     @FXML
     private VBox suggestions;
-
     private Stage stage;
     private Scene scene;
     private Parent root;
 
     public void switchToSearchResults(Event event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/view/SearchResults.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
+        Parent root = loader.load(); // Load content from SearchResults.fxml
+        SearchController searchController = loader.getController();
+        String searchText = searchField.getText(); // Lấy nội dung của TextField
+        searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
