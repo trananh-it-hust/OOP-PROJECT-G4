@@ -22,12 +22,13 @@
     ],
     "ner":[
       "BLOCKCHAIN_TECH",
+      "CONFERENCE",
       "DATA_AI",
-      "EVENT",
-      "FAC",
-      "ORDINAL",
+      "DATE",
+      "FINANCE",
+      "LOC",
       "ORG",
-      "PERCENT",
+      "OTHER_IT_TERMINOLY",
       "PERSON",
       "PRODUCT"
     ]
@@ -48,32 +49,7 @@
     "ents_p":1.0,
     "ents_r":1.0,
     "ents_per_type":{
-      "BLOCKCHAIN_TECH":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "PERCENT":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "DATA_AI":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "ORDINAL":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
       "PERSON":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "PRODUCT":{
         "p":1.0,
         "r":1.0,
         "f":1.0
@@ -83,18 +59,48 @@
         "r":1.0,
         "f":1.0
       },
-      "FAC":{
+      "LOC":{
         "p":1.0,
         "r":1.0,
         "f":1.0
       },
-      "EVENT":{
+      "PRODUCT":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "DATE":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "DATA_AI":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "BLOCKCHAIN_TECH":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "OTHER_IT_TERMINOLY":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "FINANCE":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "CONFERENCE":{
         "p":1.0,
         "r":1.0,
         "f":1.0
       }
     },
-    "tok2vec_loss":467.8797849641,
-    "ner_loss":39.7347872414
+    "tok2vec_loss":125.6732954271,
+    "ner_loss":16.0761570692
   }
 }
