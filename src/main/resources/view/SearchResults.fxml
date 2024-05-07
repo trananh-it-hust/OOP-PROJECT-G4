@@ -8,8 +8,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@/styles/SearchResults.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.SearchController">
    <children>
+      <VBox fx:id="searchResults" layoutX="13.0" layoutY="66.0" prefHeight="324.0" prefWidth="568.0" />
       <TextField fx:id="searchField" layoutX="72.0" layoutY="14.0" prefHeight="32.0" prefWidth="203.0" />
       <VBox fx:id="suggestions" layoutX="72.0" layoutY="46.0" prefHeight="96.0" prefWidth="203.0" />
       <Button layoutX="280.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchToSearchResults">
@@ -29,6 +30,5 @@
             </ImageView>
          </graphic></Button>
       <Line endX="421.5999755859375" endY="-1.1444091796875E-5" layoutX="136.0" layoutY="61.0" startX="-100.0" />
-      <VBox fx:id="searchResults" layoutX="13.0" layoutY="66.0" prefHeight="324.0" prefWidth="568.0" />
    </children>
 </AnchorPane>
