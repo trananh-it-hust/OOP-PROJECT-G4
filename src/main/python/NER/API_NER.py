@@ -3,7 +3,7 @@ import spacy
 app = Flask(__name__)
 
 # Tải mô hình NLP đã huấn luyện của spaCy
-nlp_ner = spacy.load("model-best")
+nlp_ner = spacy.load("./src/main/python/NER/model-best")
 
 # Định nghĩa hàm predict
 @app.route('/predict', methods=['POST'])
