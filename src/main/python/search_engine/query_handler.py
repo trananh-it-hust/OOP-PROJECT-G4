@@ -90,7 +90,7 @@ class QueryHandler:
 
         
         elif model_name == 'TxtAI':
-            similarities = embeddings.search(preprocessed_query)
+            similarities = embeddings.search(preprocessed_query, limit=500)
 
         # Bước 6: Sắp xếp và hiển thị kết quả
         results = []
