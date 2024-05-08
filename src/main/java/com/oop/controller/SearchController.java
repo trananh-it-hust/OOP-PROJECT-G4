@@ -245,7 +245,7 @@ public class SearchController implements Initializable {
 
     // Xử lý sự kiện khi ô tìm kiếm được sử dụng
     public void initialize() {
-        searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        searchField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
