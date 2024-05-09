@@ -4,7 +4,7 @@ def handle(tu_khoa,ket_qua_tim_kiem):
     if tu_khoa=='':
         ket_qua_tim_kiem=[]
         return
-    with open('./src/main/resources/data/data.csv', mode='r', encoding='utf-8') as file:
+    with open('OOP-PROJECT-G4/src/main//resources/data/data.csv', mode='r', encoding='utf-8') as file:
         csv_file = csv.reader(file)
         for row in csv_file:
             row_ug=row[0].split('/')
@@ -32,7 +32,7 @@ def handle(tu_khoa,ket_qua_tim_kiem):
             if len(ket_qua_tim_kiem)>5:
                 break                   
     if len(ket_qua_tim_kiem) < 5 :
-        with open('./src/main/resources/data/data.csv', mode='r', encoding='utf-8') as file:
+        with open('OOP-PROJECT-G4/src/main//resources/data/data.csv', mode='r', encoding='utf-8') as file:
             csv_file = csv.reader(file)
             for row in csv_file:
                 row_ug=row[3].split('.')
@@ -58,7 +58,7 @@ def handle(tu_khoa,ket_qua_tim_kiem):
                 if len(ket_qua_tim_kiem)>5:
                     break         
     if len(ket_qua_tim_kiem) < 5 :
-        with open('./src/main/resources/data/data.csv', mode='r', encoding='utf-8') as file:
+        with open('OOP-PROJECT-G4/src/main//resources/data/data.csv', mode='r', encoding='utf-8') as file:
             csv_file = csv.reader(file)
             for row in csv_file:
                 row_ug=row[4].split('.')
