@@ -5,7 +5,7 @@
   "backend": "faiss",
   "offset": 8334,
   "build": {
-    "create": "2024-05-04T21:15:34Z",
+    "create": "2024-05-09T15:21:09Z",
     "python": "3.10.14",
     "settings": {
       "components": "IVF213,Flat"
@@ -13,5 +13,5 @@
     "system": "Windows (AMD64)",
     "txtai": "7.1.0"
   },
-  "update": "2024-05-04T21:15:34Z"
+  "update": "2024-05-09T15:21:09Z"
 }

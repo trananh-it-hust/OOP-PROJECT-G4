@@ -12,8 +12,8 @@ def find_search_engine_path():
     current_directory = os.getcwd()
 
     # Kiểm tra xem thư mục hiện tại có tên là "search_engine" không
-    # if os.path.basename(current_directory) == "search_engine":
-    #     return current_directory
+    if os.path.basename(current_directory) == "search_engine":
+        return current_directory
 
     # Duyệt qua tất cả các thư mục và tệp tin trong cây thư mục bắt đầu từ thư mục hiện tại
     for dirpath, dirnames, filenames in os.walk(current_directory):
@@ -39,6 +39,9 @@ with open('../../resources/assets/stopwords.txt') as file:
 with open('../../resources/assets/lemmatization-en.json') as file:
     lemmatizer = json.load(file)
 
+with open('../../resources/assets/contractions.txt') as file:
+    contractions = file.read().splitlines()
+
 os.chdir(original_dir)
 
 class Preprocessor():
@@ -61,6 +64,9 @@ class Preprocessor():
         text = re.sub(r'[^\w\s]', '', text)  # Loại bỏ dấu câu
         
         return text
+    
+    def remove_contractions(self, text):
+        return ' '.join(word for word in text.split() if word not in contractions)
 
     def split_numbers_from_characters(self, text):
         parts = re.split('(\d+)', text)
@@ -81,6 +87,8 @@ class Preprocessor():
         return ' '.join([lemmatizer.get(word, word) for word in text.split()])
 
     def preprocess_text(self,text):
+        text = str(text)
+        text = self.remove_contractions(text=text)
         text = self.clean_text(text=text)
         text = self.split_numbers_from_characters(text)
 
