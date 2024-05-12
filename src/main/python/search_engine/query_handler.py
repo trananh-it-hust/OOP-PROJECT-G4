@@ -42,7 +42,7 @@ os.chdir(original_dir)
 
 class QueryHandler:
     def __init__(self) -> None:
-        return None;
+        return None
 
     def find_closest_word(self, word, model_name='Tfidf'):
         if model_name == 'Tfidf':
@@ -54,6 +54,9 @@ class QueryHandler:
                 if word in vocab:
                     return word
                 else:
+                    for vocab_word in vocab:
+                        if vocab_word.startswith(word):
+                            return vocab_word                    
                     # Tìm từ gần nhất trong từ điển sử dụng Levenshtein distance
                     closest_word = min(vocab, key=lambda x: Levenshtein.distance(word, x))
                     return closest_word
@@ -65,10 +68,16 @@ class QueryHandler:
             return word
 
     def preprocess_query(self, query, model_name='Tfidf'):
+        if model_name == 'TxtAI':
+            return query
+        
+        original_query = query
         query = preprocessor.preprocess_text(query)
         query = ' '.join(self.find_closest_word(word=word, model_name=model_name) for word in query.split())
+        if query == '':
+            query = ' '.join(self.find_closest_word(word=word, model_name=model_name) for word in original_query.split())
         
-        return query;
+        return query
 
     def query(self, query, model_name='Tfidf'):
 
@@ -81,12 +90,12 @@ class QueryHandler:
 
         
         elif model_name == 'TxtAI':
-            similarities = embeddings.search(preprocessed_query)
+            similarities = embeddings.search(preprocessed_query, limit=500)
 
         # Bước 6: Sắp xếp và hiển thị kết quả
         results = []
         for idx, sim in similarities:
-            if sim > 0.1:
+            if sim > 0.01:
                 result = {
                     "similarity score": sim,
                     "article": {
