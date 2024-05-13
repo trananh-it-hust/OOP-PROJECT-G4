@@ -97,7 +97,7 @@ public class MainController {
 
     public void initialize() {
         // Thêm lắng nghe sự kiện cho TextField khi scene được tạo
-        searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        searchField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {

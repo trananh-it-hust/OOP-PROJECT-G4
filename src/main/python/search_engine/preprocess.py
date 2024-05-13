@@ -12,8 +12,8 @@ def find_search_engine_path():
     current_directory = os.getcwd()
 
     # Kiểm tra xem thư mục hiện tại có tên là "search_engine" không
-    # if os.path.basename(current_directory) == "search_engine":
-    #     return current_directory
+    if os.path.basename(current_directory) == "search_engine":
+        return current_directory
 
     # Duyệt qua tất cả các thư mục và tệp tin trong cây thư mục bắt đầu từ thư mục hiện tại
     for dirpath, dirnames, filenames in os.walk(current_directory):
@@ -87,6 +87,7 @@ class Preprocessor():
         return ' '.join([lemmatizer.get(word, word) for word in text.split()])
 
     def preprocess_text(self,text):
+        text = str(text)
         text = self.remove_contractions(text=text)
         text = self.clean_text(text=text)
         text = self.split_numbers_from_characters(text)
