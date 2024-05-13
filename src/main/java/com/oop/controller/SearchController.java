@@ -45,7 +45,7 @@ public class SearchController implements Initializable {
     private VBox suggestions;
 
     @FXML
-    private VBox searchResults;
+    private VBox searchResultShow;
     @FXML
     private Button nextPage;
     @FXML
@@ -55,7 +55,8 @@ public class SearchController implements Initializable {
     private ChoiceBox<String> categorySort;
     @FXML
     private Text currentPage;
-    @FXML Text categoryText;
+    @FXML
+    private Text categoryText;
     private ObservableList<String> criteriaList = FXCollections.observableArrayList("Descending post date");
 
     private Stage stage;
@@ -64,10 +65,7 @@ public class SearchController implements Initializable {
 
     private Parent root;
 
-
-    private String searchQuery;
-
-    private ArrayList<Item> itemList;
+    private ArrayList<Item> searchResultList;
     static private int countPageNumber = 1;
 
     public void setChoice(ActionEvent event) {
@@ -83,8 +81,8 @@ public class SearchController implements Initializable {
 
     public void filterByUpdateDateDescending() {
         Comparator<Item> dateComparator = Comparator.comparing(Item::getCreationDate).reversed();
-        Collections.sort(itemList, dateComparator);
-        addSearchResult(itemList);
+        Collections.sort(searchResultList, dateComparator);
+        addSearchResult(searchResultList);
     }
 
     public void switchToMain(Event event) throws IOException {
@@ -149,38 +147,35 @@ public class SearchController implements Initializable {
 
     @FXML
     private void nextPage(ActionEvent event) {
-        if (countPageNumber < itemList.size() / 10) {
+        if (countPageNumber < searchResultList.size() / 10) {
             countPageNumber++;
-            addSearchResult(itemList);
+            addSearchResult(searchResultList);
             currentPage.setText("Page: "+countPageNumber);
         }
     }
-
     @FXML
     private void prevPage(ActionEvent event) {
         if (countPageNumber > 1) {
             countPageNumber--;
-            addSearchResult(itemList);
+            addSearchResult(searchResultList);
             currentPage.setText("Page: "+countPageNumber);
         }
     }
 
     private void addSearchResult(List<Item> itemList) {
-        searchResults.getChildren().clear();
+        searchResultShow.getChildren().clear();
         int startIndex = 10 * (countPageNumber - 1);
         int endIndex = Math.min(10 * countPageNumber, itemList.size());
-        VBox scrollableContent = new VBox(); // Tạo VBox để chứa nội dung cuộn
+        searchResultShow = new VBox();
         for (int i = startIndex; i < endIndex; i++) {
             VBox itemNode = createItemNode(itemList.get(i));
-            scrollableContent.getChildren().add(itemNode);
+           searchResultShow.getChildren().add(itemNode);
         }
-        // Tạo ScrollPane và đặt nội dung là VBox chứa các item
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(scrollableContent);
-        // Đặt chiều rộng và chiều cao cho ScrollPane
-        scrollPane.setPrefWidth(800); // Đặt chiều rộng tuỳ ý
-        scrollPane.setPrefHeight(400); // Đặt chiều cao tuỳ ý
-        searchResults.getChildren().add(scrollPane); // Thêm ScrollPane vào VBox searchResults
+        scrollPane.setContent(searchResultShow);
+        scrollPane.setPrefWidth(485);
+        scrollPane.setPrefHeight(250);
+       searchResultShow.getChildren().add(scrollPane);
     }
 
     private VBox createItemNode(Item item) {
@@ -214,7 +209,6 @@ public class SearchController implements Initializable {
         double totalTextHeight = 0.0;
         int lineCount = 0;
 
-        // Xác định tổng chiều cao của văn bản
         for (Node node : textFlow.getChildren()) {
             if (node instanceof Text) {
                 Text text = (Text) node;
@@ -224,7 +218,6 @@ public class SearchController implements Initializable {
             }
         }
 
-        // Nếu có nhiều hơn 2 dòng, cắt đi và chỉ hiển thị 2 dòng đầu tiên
         if (lineCount > maxLines) {
             double maxHeight = textFlow.getChildren().get(0).getBoundsInLocal().getHeight() * maxLines;
             double currentHeight = 0.0;
@@ -237,10 +230,8 @@ public class SearchController implements Initializable {
                 }
                 i++;
             }
-            // Xóa các nút thừa ra khỏi textFlow
             if (i < textFlow.getChildren().size()) {
                 textFlow.getChildren().remove(i, textFlow.getChildren().size());
-                // Thêm dấu ... vào cuối
                 Text lastLine = new Text("...");
                 textFlow.getChildren().add(lastLine);
             }
@@ -249,12 +240,11 @@ public class SearchController implements Initializable {
 
 
     public void getData() throws ParseException, IOException, URISyntaxException {
-        List<Item> resultSearch = APICaller.getSearchResult("BL");
-        addSearchResult(resultSearch);
+        searchResultList = (ArrayList<Item>) APICaller.getSearchResult(searchField.getText());
+        addSearchResult((List<Item>)searchResultList);
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("1st");
         categorySort.setItems(criteriaList);
         categoryText.setText("Category");
         currentPage.setText("Page: " +(countPageNumber));
