@@ -1,5 +1,9 @@
 joblib>=1.4.0
+<<<<<<< HEAD
 pandas>=2.1.4
+=======
+pandas>=2.0.0
+>>>>>>> 005cc2e539810aaf5e67e4c945f4392b50066a1a
 spacy>=3.5.3
 scikit-learn>=1.1.3
 python-dateutil>=2.8.2
