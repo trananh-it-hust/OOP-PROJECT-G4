@@ -9,8 +9,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@/styles/Main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.MainController">
    <children>
+      <VBox fx:id="suggestions" layoutX="173.0" layoutY="216.0" prefHeight="15.0" prefWidth="207.0" />
       <TextField fx:id="searchField" layoutX="173.0" layoutY="184.0" prefHeight="32.0" prefWidth="207.0" />
       <Button layoutX="387.0" layoutY="184.0" mnemonicParsing="false" onAction="#switchToSearchResults" prefHeight="26.0" prefWidth="29.0">
          <graphic>
@@ -25,6 +26,5 @@
             <Font name="System Bold" size="28.0" />
          </font>
       </Text>
-      <VBox fx:id="suggestions" layoutX="173.0" layoutY="216.0" prefHeight="108.0" prefWidth="207.0" />
    </children>
 </AnchorPane>
