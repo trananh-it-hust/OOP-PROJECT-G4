@@ -55,7 +55,8 @@ public class SearchController implements Initializable {
     private ChoiceBox<String> categorySort;
     @FXML
     private Text currentPage;
-    @FXML Text categoryText;
+    @FXML
+    Text categoryText;
     private ObservableList<String> criteriaList = FXCollections.observableArrayList("Descending post date");
 
     private Stage stage;
@@ -63,7 +64,6 @@ public class SearchController implements Initializable {
     private Scene scene;
 
     private Parent root;
-
 
     private String searchQuery;
 
@@ -94,6 +94,7 @@ public class SearchController implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+
     public void switchToSearchResults(Event event) throws IOException {
         String searchText = searchField.getText().trim();
         if (!searchText.isEmpty()) {
@@ -101,6 +102,7 @@ public class SearchController implements Initializable {
             root = loader.load();
             SearchController searchController = loader.getController();
             searchController.setSearchText(searchText);
+            searchController.initialize(null, null);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
@@ -113,6 +115,7 @@ public class SearchController implements Initializable {
             alert.showAndWait();
         }
     }
+
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
         for (String suggestion : suggestionsResult) {
@@ -152,7 +155,7 @@ public class SearchController implements Initializable {
         if (countPageNumber < itemList.size() / 10) {
             countPageNumber++;
             addSearchResult(itemList);
-            currentPage.setText("Page: "+countPageNumber);
+            currentPage.setText("Page: " + countPageNumber);
         }
     }
 
@@ -161,7 +164,7 @@ public class SearchController implements Initializable {
         if (countPageNumber > 1) {
             countPageNumber--;
             addSearchResult(itemList);
-            currentPage.setText("Page: "+countPageNumber);
+            currentPage.setText("Page: " + countPageNumber);
         }
     }
 
@@ -247,9 +250,8 @@ public class SearchController implements Initializable {
         }
     }
 
-
     public void getData() throws ParseException, IOException, URISyntaxException {
-        List<Item> resultSearch = APICaller.getSearchResult("BL");
+        List<Item> resultSearch = APICaller.getSearchResult(searchField.getText());
         addSearchResult(resultSearch);
     }
 
@@ -257,7 +259,7 @@ public class SearchController implements Initializable {
         System.out.println("1st");
         categorySort.setItems(criteriaList);
         categoryText.setText("Category");
-        currentPage.setText("Page: " +(countPageNumber));
+        currentPage.setText("Page: " + (countPageNumber));
         try {
             getData();
         } catch (ParseException | IOException | URISyntaxException e) {
@@ -289,6 +291,7 @@ public class SearchController implements Initializable {
             }
         });
     }
+
     private void openWebView(String url) {
         WebView webView = new WebView();
         webView.getEngine().load(url);
