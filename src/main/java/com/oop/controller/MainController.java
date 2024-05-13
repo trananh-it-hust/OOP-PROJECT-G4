@@ -38,19 +38,17 @@ public class MainController {
     private Parent root;
 
     public void switchToSearchResults(Event event) throws IOException {
-        String searchText = searchField.getText().trim(); // Loại bỏ dấu cách từ cả hai phía của chuỗi
-        if (!searchText.isEmpty()) { // Kiểm tra xem chuỗi sau khi loại bỏ dấu cách có rỗng không
+        String searchText = searchField.getText().trim();
+        if (!searchText.isEmpty()) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
             root = loader.load(); // Load content from SearchResults.fxml
             SearchController searchController = loader.getController();
-            searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
+            searchController.setSearchText(searchText);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         } else {
-            // Hiển thị thông báo hoặc thực hiện hành động khác nếu TextField chỉ chứa dấu cách
-            // Ví dụ: hiển thị một cảnh báo
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning");
             alert.setHeaderText(null);
@@ -107,8 +105,6 @@ public class MainController {
                         e.printStackTrace();
                     }
                 } else {
-                    // Phần xử lý khác khi trường văn bản không rỗng
-                    // (ví dụ: hiển thị gợi ý tìm kiếm)
                     String searchQuery = searchField.getText();
                     List<String> suggestionsResults = new ArrayList<String>();
                     try {
