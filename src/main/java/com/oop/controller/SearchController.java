@@ -57,6 +57,7 @@ public class SearchController implements Initializable {
     private Text currentPage;
     @FXML
     private Text categoryText;
+
     private ObservableList<String> criteriaList = FXCollections.observableArrayList("Descending post date");
 
     private Stage stage;
@@ -66,6 +67,7 @@ public class SearchController implements Initializable {
     private Parent root;
 
     private ArrayList<Item> searchResultList;
+
     static private int countPageNumber = 1;
 
     public void setChoice(ActionEvent event) {
@@ -92,6 +94,7 @@ public class SearchController implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+
     public void switchToSearchResults(Event event) throws IOException {
         String searchText = searchField.getText().trim();
         if (!searchText.isEmpty()) {
@@ -99,6 +102,7 @@ public class SearchController implements Initializable {
             root = loader.load();
             SearchController searchController = loader.getController();
             searchController.setSearchText(searchText);
+            searchController.initialize(null, null);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
@@ -111,6 +115,7 @@ public class SearchController implements Initializable {
             alert.showAndWait();
         }
     }
+
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
         for (String suggestion : suggestionsResult) {
@@ -151,6 +156,7 @@ public class SearchController implements Initializable {
             countPageNumber++;
             addSearchResult(searchResultList);
             currentPage.setText("Page: "+countPageNumber);
+
         }
     }
     @FXML
@@ -238,7 +244,6 @@ public class SearchController implements Initializable {
         }
     }
 
-
     public void getData() throws ParseException, IOException, URISyntaxException {
         searchResultList = (ArrayList<Item>) APICaller.getSearchResult(searchField.getText());
         addSearchResult((List<Item>)searchResultList);
@@ -247,7 +252,7 @@ public class SearchController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         categorySort.setItems(criteriaList);
         categoryText.setText("Category");
-        currentPage.setText("Page: " +(countPageNumber));
+        currentPage.setText("Page: " + (countPageNumber));
         try {
             getData();
         } catch (ParseException | IOException | URISyntaxException e) {
@@ -279,6 +284,7 @@ public class SearchController implements Initializable {
             }
         });
     }
+
     private void openWebView(String url) {
         WebView webView = new WebView();
         webView.getEngine().load(url);
