@@ -44,12 +44,14 @@ public class MainController {
             root = loader.load(); // Load content from SearchResults.fxml
             SearchController searchController = loader.getController();
             searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
+            searchController.initialize(null, null);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         } else {
-            // Hiển thị thông báo hoặc thực hiện hành động khác nếu TextField chỉ chứa dấu cách
+            // Hiển thị thông báo hoặc thực hiện hành động khác nếu TextField chỉ chứa dấu
+            // cách
             // Ví dụ: hiển thị một cảnh báo
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning");
@@ -58,7 +60,6 @@ public class MainController {
             alert.showAndWait();
         }
     }
-
 
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
