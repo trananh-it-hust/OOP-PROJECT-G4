@@ -43,7 +43,8 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
             root = loader.load(); // Load content from SearchResults.fxml
             SearchController searchController = loader.getController();
-            searchController.setSearchText(searchText);
+            searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
+            searchController.initialize(null, null);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
@@ -56,7 +57,6 @@ public class MainController {
             alert.showAndWait();
         }
     }
-
 
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
