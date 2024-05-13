@@ -169,10 +169,18 @@ public class SearchController implements Initializable {
         searchResults.getChildren().clear();
         int startIndex = 10 * (countPageNumber - 1);
         int endIndex = Math.min(10 * countPageNumber, itemList.size());
+        VBox scrollableContent = new VBox(); // Tạo VBox để chứa nội dung cuộn
         for (int i = startIndex; i < endIndex; i++) {
             VBox itemNode = createItemNode(itemList.get(i));
-            searchResults.getChildren().add(itemNode);
+            scrollableContent.getChildren().add(itemNode);
         }
+        // Tạo ScrollPane và đặt nội dung là VBox chứa các item
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(scrollableContent);
+        // Đặt chiều rộng và chiều cao cho ScrollPane
+        scrollPane.setPrefWidth(800); // Đặt chiều rộng tuỳ ý
+        scrollPane.setPrefHeight(400); // Đặt chiều cao tuỳ ý
+        searchResults.getChildren().add(scrollPane); // Thêm ScrollPane vào VBox searchResults
     }
 
     private VBox createItemNode(Item item) {
@@ -203,25 +211,42 @@ public class SearchController implements Initializable {
 
     private void limitTextLength(TextFlow textFlow, int maxLines) {
         double textFlowWidth = textFlow.getMaxWidth();
-        double textHeight = 0.0;
+        double totalTextHeight = 0.0;
         int lineCount = 0;
 
+        // Xác định tổng chiều cao của văn bản
         for (Node node : textFlow.getChildren()) {
             if (node instanceof Text) {
                 Text text = (Text) node;
                 text.setWrappingWidth(textFlowWidth);
-                textHeight += text.getBoundsInLocal().getHeight();
+                totalTextHeight += text.getBoundsInLocal().getHeight();
                 lineCount++;
             }
         }
 
+        // Nếu có nhiều hơn 2 dòng, cắt đi và chỉ hiển thị 2 dòng đầu tiên
         if (lineCount > maxLines) {
-            int removeIndex = maxLines;
-            textFlow.getChildren().remove(removeIndex, textFlow.getChildren().size());
-            Text lastLine = new Text("...");
-            textFlow.getChildren().add(lastLine);
+            double maxHeight = textFlow.getChildren().get(0).getBoundsInLocal().getHeight() * maxLines;
+            double currentHeight = 0.0;
+            int i = 0;
+            for (Node node : textFlow.getChildren()) {
+                if (currentHeight + node.getBoundsInLocal().getHeight() <= maxHeight) {
+                    currentHeight += node.getBoundsInLocal().getHeight();
+                } else {
+                    break;
+                }
+                i++;
+            }
+            // Xóa các nút thừa ra khỏi textFlow
+            if (i < textFlow.getChildren().size()) {
+                textFlow.getChildren().remove(i, textFlow.getChildren().size());
+                // Thêm dấu ... vào cuối
+                Text lastLine = new Text("...");
+                textFlow.getChildren().add(lastLine);
+            }
         }
     }
+
 
     public void getData() throws ParseException, IOException, URISyntaxException {
         List<Item> resultSearch = APICaller.getSearchResult("BL");
