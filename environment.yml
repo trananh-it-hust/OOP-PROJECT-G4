@@ -4,7 +4,7 @@ channels:
 dependencies:
 - joblib>=1.4.0
 - pandas>=2.0.0
-- spacy>=3.7.0
+- spacy>=3.7.1
 - scikit-learn>=1.1.3
 - python-dateutil>=2.8.2
 - python-Levenshtein>=0.24.0

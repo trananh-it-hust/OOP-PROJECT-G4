@@ -31,7 +31,7 @@ nlp_ner = spacy.load("./src/main/python/NER/model-best")
 @app.route('/predict', methods=['POST'])
 def predict():
     # Nhận dữ liệu đầu vào từ yêu cầu
-    data = request.args.get('text')
+    data = request.data.decode('utf-8')
     # Xử lý văn bản và dự đoán
     doc = nlp_ner(data)
     ans = {}
