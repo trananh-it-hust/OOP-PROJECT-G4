@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.control.Alert;
 import org.json.simple.parser.ParseException;
 
 import com.oop.model.APICaller;
@@ -37,15 +38,24 @@ public class MainController {
     private Parent root;
 
     public void switchToSearchResults(Event event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
-        root = loader.load(); // Load content from SearchResults.fxml
-        SearchController searchController = loader.getController();
-        String searchText = searchField.getText(); // Lấy nội dung của TextField
-        searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        String searchText = searchField.getText().trim();
+        if (!searchText.isEmpty()) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
+            root = loader.load(); // Load content from SearchResults.fxml
+            SearchController searchController = loader.getController();
+            searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
+            searchController.initialize(null, null);
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter something in the search box before clicking search!");
+            alert.showAndWait();
+        }
     }
 
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
@@ -88,7 +98,6 @@ public class MainController {
         searchField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                // Kiểm tra nếu phím được ấn là phím Enter
                 if (event.getCode().equals(KeyCode.ENTER)) {
                     try {
                         switchToSearchResults(event);
@@ -109,6 +118,7 @@ public class MainController {
                         e.printStackTrace();
                     }
                 }
+
             }
         });
     }

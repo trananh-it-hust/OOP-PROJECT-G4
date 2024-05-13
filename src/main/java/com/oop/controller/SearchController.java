@@ -45,7 +45,7 @@ public class SearchController implements Initializable {
     private VBox suggestions;
 
     @FXML
-    private VBox searchResult;
+    private VBox searchResultShow;
     @FXML
     private Button nextPage;
     @FXML
@@ -53,57 +53,40 @@ public class SearchController implements Initializable {
 
     @FXML
     private ChoiceBox<String> categorySort;
+    @FXML
+    private Text currentPage;
+    @FXML
+    private Text categoryText;
 
-    // Danh sách tiêu chí sắp xếp
-    private ObservableList<String> criteriaList = FXCollections.observableArrayList("Ngày đăng giảm dần");
+    private ObservableList<String> criteriaList = FXCollections.observableArrayList("Descending post date");
 
-    // Tham chiếu tới Stage hiện tại
     private Stage stage;
 
-    // Tham chiếu tới Scene hiện tại
     private Scene scene;
 
-    // Tham chiếu tới Parent root của Scene hiện tại
     private Parent root;
 
-    // Dữ liệu tìm kiếm được nhập từ ô tìm kiếm
-    private String searchQuery;
+    private ArrayList<Item> searchResultList;
 
-    // Danh sách các mục được trả về từ API
-    private ArrayList<Item> itemList;
     static private int countPageNumber = 1;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Thêm các tiêu chí sắp xếp vào ChoiceBox
-        categorySort.setItems(criteriaList);
-    }
-
-    // Xử lý sự kiện khi lựa chọn tiêu chí sắp xếp thay đổi
     public void setChoice(ActionEvent event) {
         String choiceChosen = categorySort.getValue();
-        // Xử lý tiêu chí đã chọn
         if (choiceChosen != null) {
             switch (choiceChosen) {
-                case "Ngày đăng giảm dần":
-                    // Sắp xếp danh sách theo ngày giảm dần
+                case "Descending posting date":
                     filterByUpdateDateDescending();
                     break;
-                // Thêm các trường hợp khác nếu cần
             }
         }
     }
 
-    // Sắp xếp danh sách theo ngày giảm dần
     public void filterByUpdateDateDescending() {
         Comparator<Item> dateComparator = Comparator.comparing(Item::getCreationDate).reversed();
-        // Sắp xếp danh sách theo ngày giảm dần
-        Collections.sort(itemList, dateComparator);
-        // Hiển thị danh sách đã sắp xếp
-        addSearchResult(itemList);
+        Collections.sort(searchResultList, dateComparator);
+        addSearchResult(searchResultList);
     }
 
-    // Chuyển đến màn hình chính
     public void switchToMain(Event event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/view/Main.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -112,20 +95,30 @@ public class SearchController implements Initializable {
         stage.show();
     }
 
-    // Chuyển đến kết quả tìm kiếm
     public void switchToSearchResults(Event event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/view/SearchResults.fxml"));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        String searchText = searchField.getText().trim();
+        if (!searchText.isEmpty()) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
+            root = loader.load();
+            SearchController searchController = loader.getController();
+            searchController.setSearchText(searchText);
+            searchController.initialize(null, null);
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter something in the search box before clicking search!");
+            alert.showAndWait();
+        }
     }
 
-    // Thêm các gợi ý tìm kiếm
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
-        suggestions.getChildren().clear(); // Xóa các gợi ý trước
+        suggestions.getChildren().clear();
         for (String suggestion : suggestionsResult) {
-            // Tạo các gợi ý và xử lý sự kiện khi được chọn
             VBox suggestionField = new VBox();
             Label suggestionLabel = new Label(suggestion);
             suggestionField.getChildren().add(suggestionLabel);
@@ -140,7 +133,6 @@ public class SearchController implements Initializable {
                     }
                 }
             });
-            // Hiển thị hiệu ứng khi di chuột qua các gợi ý
             suggestionField.setOnMouseEntered(new EventHandler<Event>() {
                 @Override
                 public void handle(Event event) {
@@ -153,47 +145,46 @@ public class SearchController implements Initializable {
                     suggestionField.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
                 }
             });
-            suggestions.getChildren().add(suggestionField); // Thêm gợi ý vào VBox
+            suggestions.getChildren().add(suggestionField);
         }
-        suggestions.setCursor(Cursor.HAND); // Đặt con trỏ chuột thành kiểu tay
+        suggestions.setCursor(Cursor.HAND);
     }
 
     @FXML
     private void nextPage(ActionEvent event) {
-        // Tăng biến countPageNumber lên 1 nếu chưa là trang cuối cùng
-        if (countPageNumber < itemList.size() / 10) {
+        if (countPageNumber < searchResultList.size() / 10) {
             countPageNumber++;
-            // Hiển thị lại dữ liệu mới
-            addSearchResult(itemList);
+            addSearchResult(searchResultList);
+            currentPage.setText("Page: "+countPageNumber);
+
         }
     }
-
     @FXML
     private void prevPage(ActionEvent event) {
-        // Giảm biến countPageNumber đi 1 nếu không phải là trang đầu tiên
         if (countPageNumber > 1) {
             countPageNumber--;
-            // Hiển thị lại dữ liệu mới
-            addSearchResult(itemList);
+            addSearchResult(searchResultList);
+            currentPage.setText("Page: "+countPageNumber);
         }
     }
 
-    // Thêm kết quả tìm kiếm
-    private void addSearchResult(ArrayList<Item> itemList) {
-        searchResult.getChildren().clear(); // Xóa kết quả tìm kiếm trước đó
+    private void addSearchResult(List<Item> itemList) {
+        searchResultShow.getChildren().clear();
         int startIndex = 10 * (countPageNumber - 1);
-        int endIndex = Math.min(10 * countPageNumber, itemList.size()); // Đảm bảo không vượt quá số lượng mục trong itemList
+        int endIndex = Math.min(10 * countPageNumber, itemList.size());
+        searchResultShow = new VBox();
         for (int i = startIndex; i < endIndex; i++) {
-            // Tạo giao diện cho mỗi mục kết quả tìm kiếm
             VBox itemNode = createItemNode(itemList.get(i));
-            searchResult.getChildren().add(itemNode);
+           searchResultShow.getChildren().add(itemNode);
         }
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(searchResultShow);
+        scrollPane.setPrefWidth(485);
+        scrollPane.setPrefHeight(250);
+       searchResultShow.getChildren().add(scrollPane);
     }
 
-
-    // Tạo giao diện cho mỗi mục kết quả tìm kiếm
     private VBox createItemNode(Item item) {
-        // Tạo các thành phần giao diện cho mỗi mục kết quả tìm kiếm
         Hyperlink hyperlink = new Hyperlink(item.getArticleLink());
         hyperlink.setOnAction(event -> openWebView(item.getArticleLink()));
 
@@ -202,7 +193,6 @@ public class SearchController implements Initializable {
         Text date = new Text("Date: " + item.getCreationDate());
 
         TextFlow content = createTextFlow(item.getContent());
-        limitTextLength(content, 2);
 
         VBox itemNode = new VBox(title, hyperlink, source, date, content);
         itemNode.setSpacing(5);
@@ -211,52 +201,73 @@ public class SearchController implements Initializable {
         return itemNode;
     }
 
-    // Tạo TextFlow cho nội dung
     private TextFlow createTextFlow(String content) {
         TextFlow textFlow = new TextFlow();
         Text text = new Text(content);
         textFlow.getChildren().add(text);
-        textFlow.setMaxWidth(800); // Đặt chiều rộng tối đa
+        textFlow.setMaxWidth(800);
+        limitTextLength(textFlow, 2);
         return textFlow;
     }
 
-    // Giới hạn độ dài của nội dung và thêm "..." nếu cần
     private void limitTextLength(TextFlow textFlow, int maxLines) {
         double textFlowWidth = textFlow.getMaxWidth();
-        double textHeight = 0.0;
+        double totalTextHeight = 0.0;
         int lineCount = 0;
 
         for (Node node : textFlow.getChildren()) {
             if (node instanceof Text) {
                 Text text = (Text) node;
                 text.setWrappingWidth(textFlowWidth);
-                textHeight += text.getBoundsInLocal().getHeight();
+                totalTextHeight += text.getBoundsInLocal().getHeight();
                 lineCount++;
             }
         }
 
         if (lineCount > maxLines) {
-            int removeIndex = maxLines;
-            textFlow.getChildren().remove(removeIndex, textFlow.getChildren().size());
-            Text lastLine = new Text("...");
-            textFlow.getChildren().add(lastLine);
+            double maxHeight = textFlow.getChildren().get(0).getBoundsInLocal().getHeight() * maxLines;
+            double currentHeight = 0.0;
+            int i = 0;
+            for (Node node : textFlow.getChildren()) {
+                if (currentHeight + node.getBoundsInLocal().getHeight() <= maxHeight) {
+                    currentHeight += node.getBoundsInLocal().getHeight();
+                } else {
+                    break;
+                }
+                i++;
+            }
+            if (i < textFlow.getChildren().size()) {
+                textFlow.getChildren().remove(i, textFlow.getChildren().size());
+                Text lastLine = new Text("...");
+                textFlow.getChildren().add(lastLine);
+            }
         }
     }
 
-    // Xử lý sự kiện khi ô tìm kiếm được sử dụng
-    public void initialize() {
-        searchField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+    public void getData() throws ParseException, IOException, URISyntaxException {
+        searchResultList = (ArrayList<Item>) APICaller.getSearchResult(searchField.getText());
+        addSearchResult((List<Item>)searchResultList);
+    }
+
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        categorySort.setItems(criteriaList);
+        categoryText.setText("Category");
+        currentPage.setText("Page: " + (countPageNumber));
+        try {
+            getData();
+        } catch (ParseException | IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+        searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
-                    // Chuyển đến kết quả tìm kiếm khi nhấn Enter
                     try {
                         switchToSearchResults(event);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    // Hiển thị gợi ý tìm kiếm khi nhập
                     String searchQuery = searchField.getText();
                     List<String> suggestionsResults = new ArrayList<String>();
                     try {
@@ -274,7 +285,6 @@ public class SearchController implements Initializable {
         });
     }
 
-    // Mở liên kết trong WebView
     private void openWebView(String url) {
         WebView webView = new WebView();
         webView.getEngine().load(url);
@@ -284,7 +294,6 @@ public class SearchController implements Initializable {
         webViewStage.show();
     }
 
-    // Cài đặt nội dung cho ô tìm kiếm
     public void setSearchText(String searchText) {
         searchField.setText(searchText);
     }
