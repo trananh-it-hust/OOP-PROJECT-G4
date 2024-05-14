@@ -21,3 +21,9 @@ build/
 
 # VS Code files #
 .vscode/
+
+__pycache__/
+.pyc
+
+.venv
+.conda
