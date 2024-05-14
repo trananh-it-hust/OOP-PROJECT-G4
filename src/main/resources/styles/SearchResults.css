@@ -3,6 +3,6 @@
     -fx-background-radius: 30 0 0 30;
 }
 .button:pressed{
-    -fx-background-color: 239c9c;
+    -fx-background-color: #239c9c;
     -fx-background-radius: 30 0 0 30;
 }

@@ -45,7 +45,7 @@ public class SearchController implements Initializable {
     private VBox suggestions;
 
     @FXML
-    private VBox searchResultShow;
+    private VBox searchResults;
     @FXML
     private Button nextPage;
     @FXML
@@ -155,33 +155,36 @@ public class SearchController implements Initializable {
         if (countPageNumber < searchResultList.size() / 10) {
             countPageNumber++;
             addSearchResult(searchResultList);
-            currentPage.setText("Page: "+countPageNumber);
+            currentPage.setText("Page: " + countPageNumber);
 
         }
     }
+
     @FXML
     private void prevPage(ActionEvent event) {
         if (countPageNumber > 1) {
             countPageNumber--;
             addSearchResult(searchResultList);
-            currentPage.setText("Page: "+countPageNumber);
+            currentPage.setText("Page: " + countPageNumber);
         }
     }
 
     private void addSearchResult(List<Item> itemList) {
-        searchResultShow.getChildren().clear();
+        searchResults.getChildren().clear();
         int startIndex = 10 * (countPageNumber - 1);
         int endIndex = Math.min(10 * countPageNumber, itemList.size());
-        searchResultShow = new VBox();
+        VBox scrollableContent = new VBox(); // Tạo VBox để chứa nội dung cuộn
         for (int i = startIndex; i < endIndex; i++) {
             VBox itemNode = createItemNode(itemList.get(i));
-           searchResultShow.getChildren().add(itemNode);
+            scrollableContent.getChildren().add(itemNode);
         }
+        // Tạo ScrollPane và đặt nội dung là VBox chứa các item
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(searchResultShow);
-        scrollPane.setPrefWidth(485);
-        scrollPane.setPrefHeight(250);
-       searchResultShow.getChildren().add(scrollPane);
+        scrollPane.setContent(scrollableContent);
+        // Đặt chiều rộng và chiều cao cho ScrollPane
+        scrollPane.setPrefWidth(485); // Đặt chiều rộng tuỳ ý
+        scrollPane.setPrefHeight(250); // Đặt chiều cao tuỳ ý
+        searchResults.getChildren().add(scrollPane); // Thêm ScrollPane vào VBox searchResults
     }
 
     private VBox createItemNode(Item item) {
@@ -192,8 +195,7 @@ public class SearchController implements Initializable {
         Text source = new Text("Source: " + item.getWebsiteSource());
         Text date = new Text("Date: " + item.getCreationDate());
 
-        TextFlow content = createTextFlow(item.getContent());
-
+        TextFlow content = createTextFlow(item.getContent().substring(0, Math.min(item.getContent().length(), 100)));
         VBox itemNode = new VBox(title, hyperlink, source, date, content);
         itemNode.setSpacing(5);
         itemNode.setPadding(new Insets(5));
@@ -205,59 +207,16 @@ public class SearchController implements Initializable {
         TextFlow textFlow = new TextFlow();
         Text text = new Text(content);
         textFlow.getChildren().add(text);
-        textFlow.setMaxWidth(800);
-        limitTextLength(textFlow, 2);
+        textFlow.setMaxWidth(450);
         return textFlow;
-    }
-
-    private void limitTextLength(TextFlow textFlow, int maxLines) {
-        double textFlowWidth = textFlow.getMaxWidth();
-        double totalTextHeight = 0.0;
-        int lineCount = 0;
-
-        for (Node node : textFlow.getChildren()) {
-            if (node instanceof Text) {
-                Text text = (Text) node;
-                text.setWrappingWidth(textFlowWidth);
-                totalTextHeight += text.getBoundsInLocal().getHeight();
-                lineCount++;
-            }
-        }
-
-        if (lineCount > maxLines) {
-            double maxHeight = textFlow.getChildren().get(0).getBoundsInLocal().getHeight() * maxLines;
-            double currentHeight = 0.0;
-            int i = 0;
-            for (Node node : textFlow.getChildren()) {
-                if (currentHeight + node.getBoundsInLocal().getHeight() <= maxHeight) {
-                    currentHeight += node.getBoundsInLocal().getHeight();
-                } else {
-                    break;
-                }
-                i++;
-            }
-            if (i < textFlow.getChildren().size()) {
-                textFlow.getChildren().remove(i, textFlow.getChildren().size());
-                Text lastLine = new Text("...");
-                textFlow.getChildren().add(lastLine);
-            }
-        }
     }
 
     public void getData() throws ParseException, IOException, URISyntaxException {
         searchResultList = (ArrayList<Item>) APICaller.getSearchResult(searchField.getText());
-        addSearchResult((List<Item>)searchResultList);
+        addSearchResult((List<Item>) searchResultList);
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        categorySort.setItems(criteriaList);
-        categoryText.setText("Category");
-        currentPage.setText("Page: " + (countPageNumber));
-        try {
-            getData();
-        } catch (ParseException | IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
         searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -283,6 +242,14 @@ public class SearchController implements Initializable {
                 }
             }
         });
+        try {
+            getData();
+            categorySort.setItems(criteriaList);
+            categoryText.setText("Category");
+            currentPage.setText("Page: " + (countPageNumber));
+        } catch (ParseException | IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     private void openWebView(String url) {
