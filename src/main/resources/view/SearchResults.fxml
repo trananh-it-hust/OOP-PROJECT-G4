@@ -11,28 +11,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1d3557;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.SearchController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1d3557;" stylesheets="@/styles/SearchResults.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.SearchController">
    <children>
-      <VBox fx:id="suggestions" layoutX="72.0" layoutY="46.0" prefHeight="96.0" prefWidth="203.0" />
-      <Line endX="424.5" layoutX="136.0" layoutY="61.0" startX="-100.0" />
-      <Button id="nextPage" layoutX="503.0" layoutY="338.0" mnemonicParsing="false" onAction="#nextPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" textFill="#d02323" />
-      <ImageView fitHeight="25.0" fitWidth="24.0" layoutX="511.0" layoutY="342.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../image/icons-next-page.png" />
-         </image>
-      </ImageView>
-      <Button id="prevPage" layoutX="431.0" layoutY="338.0" mnemonicParsing="false" onAction="#prevPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" />
-      <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="439.0" layoutY="342.0">
-         <image>
-            <Image url="@../image/icons8-back-50.png" />
-         </image>
-      </ImageView>
-      <VBox fx:id="searchResults" layoutX="58.0" layoutY="75.0" prefHeight="250.0" prefWidth="485.0" style="-fx-background-color: #FFFFFF;" />
-      <Text fx:id="currentPage" layoutX="368.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #07f7f7; -fx-font: family;" text="Page: " wrappingWidth="50.0">
-         <font>
-            <Font size="14.0" />
-         </font></Text>
-      <Text fx:id="categoryText" layoutX="471.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <AnchorPane layoutX="-1.0" layoutY="-2.0" prefHeight="62.0" prefWidth="600.0" style="-fx-background-color: #2c5a8d;">
          <children>
             <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="396.0" layoutY="29.0" prefWidth="150.0" />
@@ -54,5 +34,25 @@
             </ImageView>
          </children>
       </AnchorPane>
+      <VBox fx:id="suggestions" layoutX="72.0" layoutY="46.0" prefHeight="96.0" prefWidth="203.0" />
+      <Line endX="424.5" layoutX="136.0" layoutY="61.0" startX="-100.0" />
+      <Button id="nextPage" layoutX="503.0" layoutY="338.0" mnemonicParsing="false" onAction="#nextPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" textFill="#d02323" />
+      <ImageView fitHeight="25.0" fitWidth="24.0" layoutX="511.0" layoutY="342.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../image/icons-next-page.png" />
+         </image>
+      </ImageView>
+      <Button id="prevPage" layoutX="431.0" layoutY="338.0" mnemonicParsing="false" onAction="#prevPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" />
+      <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="439.0" layoutY="342.0">
+         <image>
+            <Image url="@../image/icons8-back-50.png" />
+         </image>
+      </ImageView>
+      <VBox fx:id="searchResultShow" layoutX="58.0" layoutY="75.0" prefHeight="250.0" prefWidth="485.0" style="-fx-background-color: #FFFFFF;" />
+      <Text fx:id="currentPage" layoutX="368.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #07f7f7; -fx-font: family;" text="Page: " wrappingWidth="50.0">
+         <font>
+            <Font size="14.0" />
+         </font></Text>
+      <Text fx:id="categoryText" layoutX="471.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
    </children>
 </AnchorPane>
