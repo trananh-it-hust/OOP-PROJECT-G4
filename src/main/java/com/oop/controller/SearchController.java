@@ -155,16 +155,17 @@ public class SearchController implements Initializable {
         if (countPageNumber < searchResultList.size() / 10) {
             countPageNumber++;
             addSearchResult(searchResultList);
-            currentPage.setText("Page: "+countPageNumber);
+            currentPage.setText("Page: " + countPageNumber);
 
         }
     }
+
     @FXML
     private void prevPage(ActionEvent event) {
         if (countPageNumber > 1) {
             countPageNumber--;
             addSearchResult(searchResultList);
-            currentPage.setText("Page: "+countPageNumber);
+            currentPage.setText("Page: " + countPageNumber);
         }
     }
 
@@ -172,16 +173,18 @@ public class SearchController implements Initializable {
         searchResultShow.getChildren().clear();
         int startIndex = 10 * (countPageNumber - 1);
         int endIndex = Math.min(10 * countPageNumber, itemList.size());
-        searchResultShow = new VBox();
+        VBox scrollableContent = new VBox(); // Tạo VBox để chứa nội dung cuộn
         for (int i = startIndex; i < endIndex; i++) {
             VBox itemNode = createItemNode(itemList.get(i));
-           searchResultShow.getChildren().add(itemNode);
+            scrollableContent.getChildren().add(itemNode);
         }
+        // Tạo ScrollPane và đặt nội dung là VBox chứa các item
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(searchResultShow);
-        scrollPane.setPrefWidth(485);
-        scrollPane.setPrefHeight(250);
-       searchResultShow.getChildren().add(scrollPane);
+        scrollPane.setContent(scrollableContent);
+        // Đặt chiều rộng và chiều cao cho ScrollPane
+        scrollPane.setPrefWidth(800); // Đặt chiều rộng tuỳ ý
+        scrollPane.setPrefHeight(400); // Đặt chiều cao tuỳ ý
+        searchResultShow.getChildren().add(scrollPane); // Thêm ScrollPane vào VBox searchResults
     }
 
     private VBox createItemNode(Item item) {
@@ -192,8 +195,7 @@ public class SearchController implements Initializable {
         Text source = new Text("Source: " + item.getWebsiteSource());
         Text date = new Text("Date: " + item.getCreationDate());
 
-        TextFlow content = createTextFlow(item.getContent());
-
+        TextFlow content = createTextFlow(item.getContent().substring(0, Math.min(item.getContent().length(), 100)));
         VBox itemNode = new VBox(title, hyperlink, source, date, content);
         itemNode.setSpacing(5);
         itemNode.setPadding(new Insets(5));
@@ -246,18 +248,10 @@ public class SearchController implements Initializable {
 
     public void getData() throws ParseException, IOException, URISyntaxException {
         searchResultList = (ArrayList<Item>) APICaller.getSearchResult(searchField.getText());
-        addSearchResult((List<Item>)searchResultList);
+        addSearchResult((List<Item>) searchResultList);
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        categorySort.setItems(criteriaList);
-        categoryText.setText("Category");
-        currentPage.setText("Page: " + (countPageNumber));
-        try {
-            getData();
-        } catch (ParseException | IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
         searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -283,6 +277,14 @@ public class SearchController implements Initializable {
                 }
             }
         });
+        try {
+            getData();
+            categorySort.setItems(criteriaList);
+            categoryText.setText("Category");
+            currentPage.setText("Page: " + (countPageNumber));
+        } catch (ParseException | IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     private void openWebView(String url) {
