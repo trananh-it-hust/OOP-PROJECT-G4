@@ -32,7 +32,7 @@
             </ImageView>
          </graphic></Button>
       <VBox fx:id="searchResults" layoutX="58.0" layoutY="75.0" prefHeight="250.0" prefWidth="485.0" style="-fx-background-color: #FFFFFF;" />
-      <Text fx:id="currentPage" layoutX="368.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #07f7f7; -fx-font: family;" text="Page: " wrappingWidth="50.0">
+      <Text fx:id="currentPage" layoutX="368.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #07f7f7; -fx-font: 14px &quot;Arial&quot;;" text="Page: " wrappingWidth="50.0">
          <font>
             <Font size="14.0" />
          </font></Text>

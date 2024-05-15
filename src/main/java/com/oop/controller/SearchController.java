@@ -66,7 +66,7 @@ public class SearchController implements Initializable {
 
     private Parent root;
 
-    private ArrayList<Item> searchResultList;
+    static private ArrayList<Item> searchResultList;
 
     static private int countPageNumber = 1;
 
@@ -181,9 +181,8 @@ public class SearchController implements Initializable {
         // Tạo ScrollPane và đặt nội dung là VBox chứa các item
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(scrollableContent);
-        // Đặt chiều rộng và chiều cao cho ScrollPane
-        scrollPane.setPrefWidth(485); // Đặt chiều rộng tuỳ ý
-        scrollPane.setPrefHeight(250); // Đặt chiều cao tuỳ ý
+        scrollPane.setPrefWidth(485);
+        scrollPane.setPrefHeight(250);
         searchResults.getChildren().add(scrollPane); // Thêm ScrollPane vào VBox searchResults
     }
 
