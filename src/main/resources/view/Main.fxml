@@ -13,7 +13,7 @@
    <children>
       <VBox fx:id="suggestions" layoutX="173.0" layoutY="216.0" prefHeight="15.0" prefWidth="207.0" />
       <TextField fx:id="searchField" layoutX="173.0" layoutY="184.0" prefHeight="32.0" prefWidth="207.0" />
-      <Button layoutX="387.0" layoutY="184.0" mnemonicParsing="false" onAction="#switchToSearchResults" prefHeight="26.0" prefWidth="29.0">
+      <Button layoutX="387.0" layoutY="184.0" mnemonicParsing="false" onAction="#navigateToSearchResultsPage" prefHeight="26.0" prefWidth="29.0">
          <graphic>
             <ImageView fitHeight="24.0" fitWidth="24.0">
                <image>
