@@ -1,10 +1,10 @@
 .button:hover {
-    -fx-background-color: red;
-    -fx-background-radius: 30 0 0 30;
+    -fx-background-color: #07f7f7;
+    -fx-background-radius: 30 30 30 30;
 }
 .button:pressed {
     -fx-background-color: #239c9c;
-    -fx-background-radius: 30 0 0 30;
+    -fx-background-radius: 30 30 30 30;
 }
 
 #searchResultShow {
