@@ -92,7 +92,13 @@ public class APICaller {
     public static StringBuffer connectAndGetRawData(String methodType, String urlString, String input)
             throws IOException, URISyntaxException {
         StringBuffer content = new StringBuffer();
-        String parsedInput = URLEncoder.encode(input, "UTF-8");
+        String parsedInput;
+        if(methodType.equals("GET"){
+            parsedInput = URLEncoder.encode(input, "UTF-8");
+        }
+        else if(methodType.equals("POST"){
+            parsedInput = new String("");
+        }
         URI uri = new URI(urlString + parsedInput);
         URL url = uri.toURL();
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
