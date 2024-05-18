@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.oop.model.Item;
+import com.opencsv.exceptions.CsvValidationException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -67,6 +69,7 @@ public class SearchController extends ASearchPage implements Initializable {
     private ArrayList<Item> searchResultList;
 
     private int PageNumber = 1;
+
     public void setChoice(ActionEvent event) {
         String choiceChosen = categorySort.getValue();
         if (choiceChosen != null) {
@@ -86,6 +89,19 @@ public class SearchController extends ASearchPage implements Initializable {
 
     public void goHomePage(Event event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/view/Main.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void goDetailPage(Event event, Item item)
+            throws IOException, CsvValidationException, java.text.ParseException, URISyntaxException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Detail.fxml"));
+        root = loader.load();
+        DetailController detailController = loader.getController();
+        detailController.setItem(item);
+        detailController.initialize();
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -112,6 +128,7 @@ public class SearchController extends ASearchPage implements Initializable {
             alert.showAndWait();
         }
     }
+
     @Override
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
@@ -185,16 +202,30 @@ public class SearchController extends ASearchPage implements Initializable {
     private VBox createItemNode(Item item) {
         Hyperlink hyperlink = new Hyperlink(item.getArticleLink());
         hyperlink.setOnAction(event -> openWebView(item.getArticleLink()));
-
         Text title = new Text(item.getArticleTitle());
         Text source = new Text("Source: " + item.getWebsiteSource());
         Text date = new Text("Date: " + item.getCreationDate());
-
         TextFlow content = createTextFlow(item.getContent().substring(0, Math.min(item.getContent().length(), 100)));
-        VBox itemNode = new VBox(title, hyperlink, source, date, content);
+        Button detailButton = new Button("Detail");
+        detailButton.setOnAction(event -> {
+            try {
+                goDetailPage(event, item);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (CsvValidationException e) {
+                e.printStackTrace();
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
+        VBox itemNode = new VBox(title, hyperlink, source, date, content, detailButton);
+        itemNode.getStyleClass().add("itemNode");
         itemNode.setSpacing(5);
         itemNode.setPadding(new Insets(5));
-
         return itemNode;
     }
 
@@ -215,7 +246,7 @@ public class SearchController extends ASearchPage implements Initializable {
         searchField.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 try {
-                   continueSearch(event);
+                    continueSearch(event);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -244,6 +275,7 @@ public class SearchController extends ASearchPage implements Initializable {
         categoryText.setText("Category");
         currentPage.setText("Page: " + PageNumber);
     }
+
     private void openWebView(String url) {
         WebView webView = new WebView();
         webView.getEngine().load(url);

@@ -41,7 +41,6 @@
             <version>16</version>
         </dependency>
     </dependencies>
-
     <!-- Build section is used to define project build configurations -->
     <build>
         <plugins>

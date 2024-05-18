@@ -66,24 +66,22 @@ public class APICaller {
         StringBuffer jsonContent = connectAndGetRawData("POST", "http://localhost:8000/predict", input);
         String s = jsonContent.toString();
         JSONObject jo = (JSONObject) new JSONParser().parse(s);
-        JSONArray ja = (JSONArray) jo.get("entities");
-        for (Object joja : ja) {
-            if (joja instanceof JSONObject) {
-                JSONObject jojajo = (JSONObject) joja;
-                for (Object key : jojajo.keySet()) {
-                    JSONArray jaja = (JSONArray) jojajo.get(key);
-                    Set<String> items = new HashSet<String>();
-                    for (Object object : jaja) {
-                        JSONArray jojojo = (JSONArray) object;
-                        for (Object object2 : jojojo) {
-                            if (object2 instanceof String) {
-                                items.add((String) object2);
-                            }
-                        }
+        JSONObject entitiesObject = (JSONObject) jo.get("entities");
+
+        for (Object key : entitiesObject.keySet()) {
+            String entityType = (String) key;
+            JSONArray entityArray = (JSONArray) entitiesObject.get(entityType);
+
+            Set<String> items = new HashSet<>();
+            for (Object entity : entityArray) {
+                JSONArray entityDetails = (JSONArray) entity;
+                for (Object detail : entityDetails) {
+                    if (detail instanceof String) {
+                        items.add((String) detail);
                     }
-                    result.put((String) key, items);
                 }
             }
+            result.put(entityType, items);
         }
         return result;
     }
@@ -92,11 +90,10 @@ public class APICaller {
     public static StringBuffer connectAndGetRawData(String methodType, String urlString, String input)
             throws IOException, URISyntaxException {
         StringBuffer content = new StringBuffer();
-        String parsedInput;
-        if(methodType.equals("GET"){
+        String parsedInput = new String("");
+        if (methodType.equals("GET")) {
             parsedInput = URLEncoder.encode(input, "UTF-8");
-        }
-        else if(methodType.equals("POST"){
+        } else if (methodType.equals("POST")) {
             parsedInput = new String("");
         }
         URI uri = new URI(urlString + parsedInput);
