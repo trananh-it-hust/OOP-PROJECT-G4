@@ -93,21 +93,7 @@ public class MainController {
         suggestions.setCursor(Cursor.HAND);
     }
 
-    public void getInfoData() throws CsvValidationException, IOException, ParseException {
-        List<Item> items = Item.readItemsFromCSV();
-        int artTypeNewsArticleCount = 0;
-        for (Item item : items) {
-            if (item.getArticleType().equals("News Article")) {
-                artTypeNewsArticleCount++;
-            }
-        }
-        Label infoLabel = new Label("Number of items: " + items.size());
-        Label newsArticleLabel = new Label("Number of News Articles: " + artTypeNewsArticleCount);
-        infoData.getChildren().add(infoLabel);
-        infoData.getChildren().add(newsArticleLabel);
-    }
-
-    public void initialize() throws CsvValidationException, IOException, ParseException {
+    public void initialize() throws IOException, ParseException {
         // Thêm lắng nghe sự kiện cho TextField khi scene được tạo
         searchField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
