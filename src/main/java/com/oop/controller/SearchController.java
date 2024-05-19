@@ -102,6 +102,7 @@ public class SearchController extends ASearchPage implements Initializable {
         DetailController detailController = loader.getController();
         detailController.setItem(item);
         detailController.initialize();
+        detailController.setSearchReturn(this.searchField.getText().toString());
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -231,6 +232,7 @@ public class SearchController extends ASearchPage implements Initializable {
 
     private TextFlow createTextFlow(String content) {
         TextFlow textFlow = new TextFlow();
+        content = content+".....";
         Text text = new Text(content);
         textFlow.getChildren().add(text);
         textFlow.setMaxWidth(450);
