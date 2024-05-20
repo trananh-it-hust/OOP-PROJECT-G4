@@ -1,0 +1,29 @@
+target/
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# IDEA files #
+.idea/
+*.iml
+
+# Eclipse files #
+.classpath
+.project
+.settings/
+
+# NetBeans files #
+nbproject/
+build/
+
+# VS Code files #
+.vscode/
+
+__pycache__/
+.pyc
+
+.venv
+.conda
