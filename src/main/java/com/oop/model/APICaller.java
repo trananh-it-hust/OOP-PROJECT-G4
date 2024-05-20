@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javafx.scene.control.Alert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,7 +31,12 @@ public class APICaller {
         try {
             checkConnectNetWork();
         } catch (NetWorkException e) {
-            throw new RuntimeException(e);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Please check your connection and try again!");
+            alert.showAndWait();
+            throw new RuntimeException();
         }
         List<String> res = new ArrayList<>(); //Khai báo đối tượng kiểu tổng quát
         StringBuffer content = connectAndGetRawData("GET", "http://localhost:8000/suggestion?data=", input);
@@ -102,7 +108,12 @@ public class APICaller {
         try {
             checkConnectNetWork();
         } catch (NetWorkException e) {
-            throw new RuntimeException(e);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Please check your connection and try again!");
+            alert.showAndWait();
+            throw new RuntimeException();
         }
         StringBuffer content = new StringBuffer();
         String parsedInput = "";

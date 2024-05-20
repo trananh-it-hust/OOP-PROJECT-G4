@@ -257,6 +257,15 @@ public class SearchController extends ASearchPage implements Initializable {
     }
 
     private void openWebView(String url) {
+        try {
+            APICaller.checkConnectNetWork();
+        } catch (NetWorkException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Please check your connection and try again!");
+            alert.showAndWait();
+        }
         WebView webView = new WebView();
         webView.getEngine().load(url);
         Stage webViewStage = new Stage();
