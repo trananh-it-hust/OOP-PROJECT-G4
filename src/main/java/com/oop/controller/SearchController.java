@@ -265,6 +265,7 @@ public class SearchController extends ASearchPage implements Initializable {
             alert.setHeaderText(null);
             alert.setContentText("Please check your connection and try again!");
             alert.showAndWait();
+            throw new RuntimeException();
         }
         WebView webView = new WebView();
         webView.getEngine().load(url);

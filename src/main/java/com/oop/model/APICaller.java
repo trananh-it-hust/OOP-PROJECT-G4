@@ -28,16 +28,6 @@ Dễ bảo trì: Khi thay đổi kiểu dữ liệu, bạn chỉ cần thay đ�
 public class APICaller {
     // Lấy gợi ý
     public static List<String> querySuggest(String input) throws URISyntaxException, IOException, ParseException, NetWorkException {
-        try {
-            checkConnectNetWork();
-        } catch (NetWorkException e) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText(null);
-            alert.setContentText("Please check your connection and try again!");
-            alert.showAndWait();
-            throw new RuntimeException();
-        }
         List<String> res = new ArrayList<>(); //Khai báo đối tượng kiểu tổng quát
         StringBuffer content = connectAndGetRawData("GET", "http://localhost:8000/suggestion?data=", input);
         JSONParser parser = new JSONParser();
