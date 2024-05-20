@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,24 +20,31 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+/*
+Lợi ích của việc sử dụng cú pháp diamond: cú pháp diamond  List<String> res = new ArrayList<>();
+Gọn gàng và dễ đọc hơn: Giảm bớt sự lặp lại không cần thiết của kiểu dữ liệu, làm cho mã nguồn dễ đọc và hiểu hơn.
 
+Giảm lỗi: Giảm thiểu khả năng lỗi khi khai báo kiểu dữ liệu không nhất quán giữa phần bên trái và bên phải của dấu bằng (=).
+
+Dễ bảo trì: Khi thay đổi kiểu dữ liệu, bạn chỉ cần thay đổi ở một nơi (phần khai báo bên trái), không cần thay đổi ở cả hai nơi.
+ */
 public class APICaller {
     // Lấy gợi ý
     public static List<String> querySuggest(String input) throws URISyntaxException, IOException, ParseException {
-        List<String> res = new ArrayList<String>();
+        List<String> res = new ArrayList<>(); //Khai báo đối tượng kiểu tổng quát
         StringBuffer content = connectAndGetRawData("GET", "http://localhost:8000/suggestion?data=", input);
         JSONParser parser = new JSONParser();
         JSONObject jo = (JSONObject) parser.parse(content.toString());
         JSONArray ja = (JSONArray) jo.get("result");
-        for (int i = 0; i < ja.size(); i++) {
-            res.add((String) ja.get(i));
+        for (Object o : ja) {
+            res.add((String) o);
         }
         return res;
     }
 
     // Lấy tìm kiếm
     public static List<Item> getSearchResult(String input) throws ParseException, IOException, URISyntaxException {
-        List<Item> results = new ArrayList<Item>();
+        List<Item> results = new ArrayList<>();
         StringBuffer jsonContent = connectAndGetRawData("GET", "http://localhost:8000/search?q=", input);
         String s = jsonContent.toString().replace("NaN", "\"None\"");
         JSONObject jo = (JSONObject) new JSONParser().parse(s);
@@ -62,7 +70,7 @@ public class APICaller {
     // Get entities from paragraph
     public static HashMap<String, Set<String>> getEntities(String input)
             throws IOException, URISyntaxException, ParseException {
-        HashMap<String, Set<String>> result = new HashMap<String, Set<String>>();
+        HashMap<String, Set<String>> result = new HashMap<>();
         StringBuffer jsonContent = connectAndGetRawData("POST", "http://localhost:8000/predict", input);
         String s = jsonContent.toString();
         JSONObject jo = (JSONObject) new JSONParser().parse(s);
@@ -90,11 +98,11 @@ public class APICaller {
     public static StringBuffer connectAndGetRawData(String methodType, String urlString, String input)
             throws IOException, URISyntaxException {
         StringBuffer content = new StringBuffer();
-        String parsedInput = new String("");
+        String parsedInput = "";
         if (methodType.equals("GET")) {
-            parsedInput = URLEncoder.encode(input, "UTF-8");
+            parsedInput = URLEncoder.encode(input, StandardCharsets.UTF_8);
         } else if (methodType.equals("POST")) {
-            parsedInput = new String("");
+            parsedInput = "";
         }
         URI uri = new URI(urlString + parsedInput);
         URL url = uri.toURL();
@@ -109,7 +117,7 @@ public class APICaller {
             String jsonInputString = "{\"text\":\"" + input + "\"}";
             // Send the request data
             try (OutputStream os = con.getOutputStream()) {
-                byte[] in = jsonInputString.getBytes("utf-8");
+                byte[] in = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(in, 0, in.length);
             }
         } else if (methodType.equals("GET")) {
