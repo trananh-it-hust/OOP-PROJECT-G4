@@ -4,11 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +26,12 @@ Dễ bảo trì: Khi thay đổi kiểu dữ liệu, bạn chỉ cần thay đ�
  */
 public class APICaller {
     // Lấy gợi ý
-    public static List<String> querySuggest(String input) throws URISyntaxException, IOException, ParseException {
+    public static List<String> querySuggest(String input) throws URISyntaxException, IOException, ParseException, NetWorkException {
+        try {
+            checkConnectNetWork();
+        } catch (NetWorkException e) {
+            throw new RuntimeException(e);
+        }
         List<String> res = new ArrayList<>(); //Khai báo đối tượng kiểu tổng quát
         StringBuffer content = connectAndGetRawData("GET", "http://localhost:8000/suggestion?data=", input);
         JSONParser parser = new JSONParser();
@@ -44,6 +45,7 @@ public class APICaller {
 
     // Lấy tìm kiếm
     public static List<Item> getSearchResult(String input) throws ParseException, IOException, URISyntaxException {
+
         List<Item> results = new ArrayList<>();
         StringBuffer jsonContent = connectAndGetRawData("GET", "http://localhost:8000/search?q=", input);
         String s = jsonContent.toString().replace("NaN", "\"None\"");
@@ -97,6 +99,11 @@ public class APICaller {
     // Goi api va lay ket qua vao buffer
     public static StringBuffer connectAndGetRawData(String methodType, String urlString, String input)
             throws IOException, URISyntaxException {
+        try {
+            checkConnectNetWork();
+        } catch (NetWorkException e) {
+            throw new RuntimeException(e);
+        }
         StringBuffer content = new StringBuffer();
         String parsedInput = "";
         if (methodType.equals("GET")) {
@@ -134,5 +141,18 @@ public class APICaller {
             in.close();
         }
         return content;
+    }
+    public static void checkConnectNetWork() throws NetWorkException {
+        String host = "google.com";
+        try {
+            InetAddress inetAddress = InetAddress.getByName(host);
+            inetAddress.isReachable(5000);
+        } catch (java.net.UnknownHostException e) {
+            System.err.println("Không thể tìm thấy host: " + host);
+            throw new NetWorkException("Không thể kết nối tới mạng");
+        } catch (java.io.IOException e) {
+            System.err.println("Lỗi khi kiểm tra kết nối tới " + host + ": " + e.getMessage());
+            throw new NetWorkException("Lỗi khi kiểm tra kết nối tới mạng");
+        }
     }
 }

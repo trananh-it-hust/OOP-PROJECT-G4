@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.oop.model.NetWorkException;
 import javafx.scene.control.Alert;
 import org.json.simple.parser.ParseException;
 
@@ -86,10 +87,10 @@ public class MainController {
                 }
             } else {
                 String searchQuery = searchField.getText();
-                List<String> suggestionsResults = new ArrayList<String>();
+                List<String> suggestionsResults = new ArrayList<>();
                 try {
                     suggestionsResults = APICaller.querySuggest(searchQuery);
-                } catch (URISyntaxException | IOException | ParseException e) {
+                } catch (URISyntaxException | IOException | ParseException | NetWorkException e) {
                     e.printStackTrace();
                 }
                 try {
