@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
+import com.oop.model.NetWorkException;
 import com.oop.model.Item;
 import com.opencsv.exceptions.CsvValidationException;
 
@@ -235,7 +236,7 @@ public class SearchController extends ASearchPage implements Initializable {
                 try {
                     List<String> suggestionsResults = APICaller.querySuggest(searchQuery);
                     addSuggestions(suggestionsResults);
-                } catch (URISyntaxException | IOException | ParseException e) {
+                } catch (URISyntaxException | IOException | ParseException | NetWorkException e) {
                     e.printStackTrace();
                 }
             }
