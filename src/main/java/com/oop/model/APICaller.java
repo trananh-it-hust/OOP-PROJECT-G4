@@ -3,6 +3,7 @@ package com.oop.model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -62,27 +63,25 @@ public class APICaller {
     public static HashMap<String, Set<String>> getEntities(String input)
             throws IOException, URISyntaxException, ParseException {
         HashMap<String, Set<String>> result = new HashMap<String, Set<String>>();
-        StringBuffer jsonContent = connectAndGetRawData("POST", "http://localhost:8000/predict?text=", input);
+        StringBuffer jsonContent = connectAndGetRawData("POST", "http://localhost:8000/predict", input);
         String s = jsonContent.toString();
         JSONObject jo = (JSONObject) new JSONParser().parse(s);
-        JSONArray ja = (JSONArray) jo.get("entities");
-        for (Object joja : ja) {
-            if (joja instanceof JSONObject) {
-                JSONObject jojajo = (JSONObject) joja;
-                for (Object key : jojajo.keySet()) {
-                    JSONArray jaja = (JSONArray) jojajo.get(key);
-                    Set<String> items = new HashSet<String>();
-                    for (Object object : jaja) {
-                        JSONArray jojojo = (JSONArray) object;
-                        for (Object object2 : jojojo) {
-                            if (object2 instanceof String) {
-                                items.add((String) object2);
-                            }
-                        }
+        JSONObject entitiesObject = (JSONObject) jo.get("entities");
+
+        for (Object key : entitiesObject.keySet()) {
+            String entityType = (String) key;
+            JSONArray entityArray = (JSONArray) entitiesObject.get(entityType);
+
+            Set<String> items = new HashSet<>();
+            for (Object entity : entityArray) {
+                JSONArray entityDetails = (JSONArray) entity;
+                for (Object detail : entityDetails) {
+                    if (detail instanceof String) {
+                        items.add((String) detail);
                     }
-                    result.put((String) key, items);
                 }
             }
+            result.put(entityType, items);
         }
         return result;
     }
@@ -91,14 +90,32 @@ public class APICaller {
     public static StringBuffer connectAndGetRawData(String methodType, String urlString, String input)
             throws IOException, URISyntaxException {
         StringBuffer content = new StringBuffer();
-        String parsedInput = URLEncoder.encode(input, "UTF-8");
+        String parsedInput = new String("");
+        if (methodType.equals("GET")) {
+            parsedInput = URLEncoder.encode(input, "UTF-8");
+        } else if (methodType.equals("POST")) {
+            parsedInput = new String("");
+        }
         URI uri = new URI(urlString + parsedInput);
         URL url = uri.toURL();
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(methodType);
         con.setRequestProperty("Content-type", "application/json");
-        con.setConnectTimeout(5000);
-        con.setReadTimeout(5000);
+        con.setRequestProperty("Accept", "application/json");
+        if (methodType.equals("POST")) {
+            // Enable sending data
+            con.setDoOutput(true);
+            // Convert the text data to JSON format
+            String jsonInputString = "{\"text\":\"" + input + "\"}";
+            // Send the request data
+            try (OutputStream os = con.getOutputStream()) {
+                byte[] in = jsonInputString.getBytes("utf-8");
+                os.write(in, 0, in.length);
+            }
+        } else if (methodType.equals("GET")) {
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+        }
         if (con.getResponseCode() == 200) {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
