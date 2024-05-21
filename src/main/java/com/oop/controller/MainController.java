@@ -37,7 +37,7 @@ public class MainController {
     private Scene scene;
     private Parent root;
 
-    public void switchToSearchResults(Event event) throws IOException {
+    public void navigateToSearchResultsPage(Event event) throws IOException {
         String searchText = searchField.getText().trim();
         if (!searchText.isEmpty()) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
@@ -70,7 +70,7 @@ public class MainController {
                 public void handle(MouseEvent event) {
                     searchField.setText(suggestionLabel.getText());
                     try {
-                        switchToSearchResults(event);
+                        navigateToSearchResultsPage(event);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -93,14 +93,14 @@ public class MainController {
         suggestions.setCursor(Cursor.HAND);
     }
 
-    public void initialize() {
+    public void initialize() throws IOException, ParseException {
         // Thêm lắng nghe sự kiện cho TextField khi scene được tạo
         searchField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
                     try {
-                        switchToSearchResults(event);
+                        navigateToSearchResultsPage(event);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
