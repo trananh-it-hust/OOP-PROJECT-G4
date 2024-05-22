@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import javafx.scene.control.Alert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 /*
 Lợi ích của việc sử dụng cú pháp diamond: cú pháp diamond  List<String> res = new ArrayList<>();
 Gọn gàng và dễ đọc hơn: Giảm bớt sự lặp lại không cần thiết của kiểu dữ liệu, làm cho mã nguồn dễ đọc và hiểu hơn.
@@ -27,8 +29,9 @@ Dễ bảo trì: Khi thay đổi kiểu dữ liệu, bạn chỉ cần thay đ�
  */
 public class APICaller {
     // Lấy gợi ý
-    public static List<String> querySuggest(String input) throws URISyntaxException, IOException, ParseException, NetWorkException {
-        List<String> res = new ArrayList<>(); //Khai báo đối tượng kiểu tổng quát
+    public static List<String> querySuggest(String input)
+            throws URISyntaxException, IOException, ParseException, NetWorkException {
+        List<String> res = new ArrayList<>(); // Khai báo đối tượng kiểu tổng quát
         StringBuffer content = connectAndGetRawData("GET", "http://localhost:8000/suggestion?data=", input);
         JSONParser parser = new JSONParser();
         JSONObject jo = (JSONObject) parser.parse(content.toString());
@@ -92,6 +95,30 @@ public class APICaller {
         return result;
     }
 
+    // Trend detect
+    // Phần tử đầu vector là reason, còn lại là citations
+    public static HashMap<String, Vector<String>> trendDectect(String input)
+            throws IOException, URISyntaxException, ParseException {
+        HashMap<String, Vector<String>> result = new HashMap<>();
+        StringBuffer content = connectAndGetRawData("POST", "http://localhost:8000/detect", input);
+        String s = content.toString();
+        JSONObject jo = (JSONObject) new JSONParser().parse(s);
+        JSONArray trends = (JSONArray) jo.get("trends");
+        for (Object t : trends) {
+            Vector<String> v = new Vector<>();
+            JSONObject trendObject = (JSONObject) t;
+            JSONArray citations = (JSONArray) (trendObject).get("citations");
+            String reason = (trendObject).get("reason").toString();
+            String trend = (trendObject).get("trend").toString();
+            v.add(reason);
+            for (Object o : citations) {
+                v.add(o.toString());
+            }
+            result.put(trend, v);
+        }
+        return result;
+    }
+
     // Goi api va lay ket qua vao buffer
     public static StringBuffer connectAndGetRawData(String methodType, String urlString, String input)
             throws IOException, URISyntaxException {
@@ -143,6 +170,8 @@ public class APICaller {
         }
         return content;
     }
+
+    // Kiem tra ket noi internet
     public static void checkConnectNetWork() throws NetWorkException {
         String host = "google.com";
         try {
