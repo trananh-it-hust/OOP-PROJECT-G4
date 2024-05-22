@@ -11,9 +11,11 @@ app = Flask(__name__)
 @app.route('/search', methods=['GET'])
 def search():
     query = request.args.get('q')
-    query_handler = QueryHandler()
+    by_title = request.args.get('byTitle', 'False').lower() in ['true', '1', 't', 'y', 'yes']
+    semantic_search = request.args.get('semanticSearch', 'False').lower() in ['true', '1', 't', 'y', 'yes']
 
-    return query_handler.query(query=query)
+    query_handler = QueryHandler()
+    return query_handler.query(query_string=query, by_title=by_title, semantic_search=semantic_search)
 
 # API suggestion
 @app.route('/suggestion', methods=['GET'])
