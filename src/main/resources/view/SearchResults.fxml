@@ -24,7 +24,6 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <TextField fx:id="searchField" layoutX="77.0" layoutY="25.0" prefHeight="32.0" prefWidth="203.0" />
             <Button layoutX="300.0" layoutY="25.0" mnemonicParsing="false" onAction="#continueSearch" prefHeight="32.0" prefWidth="7.0" style="-fx-background-color: #30BB88; -fx-background-radius: 90;">
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="24.0">
@@ -34,6 +33,7 @@
                   </ImageView>
                </graphic>
             </Button>
+            <TextField fx:id="searchField" layoutX="74.0" layoutY="25.0" prefHeight="32.0" prefWidth="203.0" />
          </children>
       </AnchorPane>
       <VBox fx:id="suggestions" layoutX="72.0" layoutY="46.0" prefHeight="96.0" prefWidth="203.0" />

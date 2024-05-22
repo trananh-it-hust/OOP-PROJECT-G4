@@ -3,18 +3,14 @@ package com.oop.controller;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
+import com.oop.model.NetWorkException;
 import com.oop.model.Item;
 import com.opencsv.exceptions.CsvValidationException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,7 +28,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.simple.parser.ParseException;
@@ -48,17 +43,13 @@ public class SearchController extends ASearchPage implements Initializable {
     @FXML
     private VBox searchResults;
     @FXML
-    private Button nextPage;
-    @FXML
-    private Button prevPage;
-    @FXML
     private ChoiceBox<String> categorySort;
     @FXML
     private Text currentPage;
     @FXML
     private Text categoryText;
-    private int totalResultsPerPage = 10;
-    private ObservableList<String> criteriaList = FXCollections.observableArrayList("Descending post date");
+    private final int totalResultsPerPage = 10;
+    private final ObservableList<String> criteriaList = FXCollections.observableArrayList("Descending post date");
 
     private Stage stage;
 
@@ -70,7 +61,7 @@ public class SearchController extends ASearchPage implements Initializable {
 
     private int PageNumber = 1;
 
-    public void setChoice(ActionEvent event) {
+    public void setChoice() {
         String choiceChosen = categorySort.getValue();
         if (choiceChosen != null) {
             switch (choiceChosen) {
@@ -83,12 +74,12 @@ public class SearchController extends ASearchPage implements Initializable {
 
     public void filterByUpdateDateDescending() {
         Comparator<Item> dateComparator = Comparator.comparing(Item::getCreationDate).reversed();
-        Collections.sort(searchResultList, dateComparator);
+        searchResultList.sort(dateComparator);
         addSearchResult(searchResultList);
     }
 
     public void goHomePage(Event event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/view/Main.fxml"));
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Main.fxml"))); //Đảm bảo đối tượng truyền vào không phải là null
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -102,6 +93,7 @@ public class SearchController extends ASearchPage implements Initializable {
         DetailController detailController = loader.getController();
         detailController.setItem(item);
         detailController.initialize();
+        detailController.setSearchReturn(this.searchField.getText());
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -136,36 +128,23 @@ public class SearchController extends ASearchPage implements Initializable {
             VBox suggestionField = new VBox();
             Label suggestionLabel = new Label(suggestion);
             suggestionField.getChildren().add(suggestionLabel);
-            suggestionField.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    searchField.setText(suggestionLabel.getText());
-                    try {
-                        continueSearch(event);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            suggestionField.setOnMouseClicked(event -> {
+                searchField.setText(suggestionLabel.getText());
+                try {
+                    continueSearch(event);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
-            suggestionField.setOnMouseEntered(new EventHandler<Event>() {
-                @Override
-                public void handle(Event event) {
-                    suggestionField.setStyle("-fx-border-color: #808080;-fx-background-color: #F0F8FF;");
-                }
-            });
-            suggestionField.setOnMouseExited(new EventHandler<Event>() {
-                @Override
-                public void handle(Event event) {
-                    suggestionField.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
-                }
-            });
+            suggestionField.setOnMouseEntered((EventHandler<Event>) event -> suggestionField.setStyle("-fx-border-color: #808080;-fx-background-color: #F0F8FF;"));
+            suggestionField.setOnMouseExited((EventHandler<Event>) event -> suggestionField.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;"));
             suggestions.getChildren().add(suggestionField);
         }
         suggestions.setCursor(Cursor.HAND);
     }
 
     @FXML
-    private void nextPage(ActionEvent event) {
+    private void nextPage() {
         if (PageNumber < searchResultList.size() / totalResultsPerPage) {
             PageNumber++;
             addSearchResult(searchResultList);
@@ -175,7 +154,7 @@ public class SearchController extends ASearchPage implements Initializable {
     }
 
     @FXML
-    private void prevPage(ActionEvent event) {
+    private void prevPage() {
         if (PageNumber > 1) {
             PageNumber--;
             addSearchResult(searchResultList);
@@ -231,6 +210,7 @@ public class SearchController extends ASearchPage implements Initializable {
 
     private TextFlow createTextFlow(String content) {
         TextFlow textFlow = new TextFlow();
+        content = content+".....";
         Text text = new Text(content);
         textFlow.getChildren().add(text);
         textFlow.setMaxWidth(450);
@@ -243,7 +223,7 @@ public class SearchController extends ASearchPage implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        searchField.setOnKeyPressed(event -> {
+        searchField.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 try {
                     continueSearch(event);
@@ -256,7 +236,7 @@ public class SearchController extends ASearchPage implements Initializable {
                 try {
                     List<String> suggestionsResults = APICaller.querySuggest(searchQuery);
                     addSuggestions(suggestionsResults);
-                } catch (URISyntaxException | IOException | ParseException e) {
+                } catch (URISyntaxException | IOException | ParseException | NetWorkException e) {
                     e.printStackTrace();
                 }
             }
@@ -277,6 +257,16 @@ public class SearchController extends ASearchPage implements Initializable {
     }
 
     private void openWebView(String url) {
+        try {
+            APICaller.checkConnectNetWork();
+        } catch (NetWorkException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Please check your connection and try again!");
+            alert.showAndWait();
+            throw new RuntimeException();
+        }
         WebView webView = new WebView();
         webView.getEngine().load(url);
         Stage webViewStage = new Stage();
