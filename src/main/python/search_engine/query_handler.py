@@ -88,7 +88,7 @@ class QueryHandler:
         
         return query
 
-    def word_query(self, query, model_name='Tfidf', not_including=[]):
+    def single_query(self, query, model_name='Tfidf', not_including=[]):
 
         preprocessed_query = self.preprocess_query(query=query, model_name=model_name)
         if model_name == 'Tfidf':
@@ -140,21 +140,28 @@ class QueryHandler:
         return preprocessed_query, results
 
     def parse_query(self, query_string):
-    
+        # Tách các cụm từ dựa trên từ khóa 'or', 'Or', 'OR'
         terms = re.split(r'\s+or\s+|\s+Or\s+|\s+OR\s+', query_string)
         
         queries = []
         not_including = []
 
         for term in terms:
+            # Loại bỏ khoảng trắng thừa ở đầu và cuối của cụm từ
+            term = term.strip()
+            # Kiểm tra từng từ trong cụm từ
             words = term.split()
+            positive_phrase = []
             for word in words:
-                if word.startswith('-') and len(word):
+                if word.startswith('-') and len(word) > 1:
                     not_including.append(word[1:])
                 else:
-                    queries.append(word)
+                    positive_phrase.append(word)
+            if positive_phrase:
+                queries.append(' '.join(positive_phrase))
         
         return queries, not_including
+
     
     def query(self, query_string, by_title=False, semantic_search=False):
         model_name = 'Tfidf'
@@ -166,15 +173,15 @@ class QueryHandler:
         queries, not_including = self.parse_query(query_string)
 
         all_results = []
-        all_preprocessed_words = []
-        for word in queries:
-            preprocessed_word, results = self.word_query(word, model_name=model_name, not_including=not_including)
+        all_preprocessed_queries = []
+        for query in queries:
+            preprocessed_word, results = self.single_query(query=query, model_name=model_name, not_including=not_including)
             all_results.extend(results)    
-            all_preprocessed_words.append(preprocessed_word)
+            all_preprocessed_queries.append(preprocessed_word)
         
         all_results.sort(key=lambda x: x['similarity score'], reverse=True)
         all_results = all_results[:500]
-        suggested_query = ' '.join(all_preprocessed_words)
+        suggested_query = ' '.join(all_preprocessed_queries)
 
 
         response = {
@@ -187,8 +194,8 @@ class QueryHandler:
         return json.dumps(response)
 
 # if __name__ == '__main__':
-#     st = 'elon - twitter or solana'
+#     st = 'nnnjwn njswjn jswnjwns njwnjwnjws -njnwsw jjwh'
 #     queryhandler = QueryHandler()
 #     queries, not_including = queryhandler.parse_query(st)
-#     print(not_including)
+#     print(queries)
     
