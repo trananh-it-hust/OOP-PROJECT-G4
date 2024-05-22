@@ -22,21 +22,21 @@ import javafx.stage.Stage;
 
 public class DetailController {
 
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
-
     private Item item;
 
     HashMap<String, Set<String>> detailContent;
 
     @FXML
     private TextFlow contentBox;
-
-    public void switchToMain(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/view/SearchResults.fxml"));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+    private String searchText;
+    public void returnSearchPage(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
+        Parent root = loader.load(); // Load content from SearchResults.fxml
+        SearchController searchController = loader.getController();
+        searchController.setSearchText(getSearchResult()); // Truyền nội dung sang SearchController
+        searchController.initialize(null, null);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
@@ -50,12 +50,12 @@ public class DetailController {
     }
 
     public void createDetailContent() {
-        boolean isRender = false;
+        boolean isRender;
         String[] words = item.getContent().split(" ");
         for (String word : words) {
             isRender = false;
             for (String key : detailContent.keySet()) {
-                if (isRender == false && detailContent.get(key).contains(word)) {
+                if (!isRender && detailContent.get(key).contains(word)) {
                     Text keyword = new Text(key + " ");
                     Text text = new Text(word + " ");
                     text.setStyle("-fx-fill: blue; -fx-underline: true;");
@@ -65,7 +65,7 @@ public class DetailController {
                     isRender = true;
                 }
             }
-            if (isRender == false) {
+            if (!isRender) {
                 Text text = new Text(word + " ");
                 contentBox.getChildren().add(text);
             }
@@ -79,5 +79,11 @@ public class DetailController {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+    public String getSearchResult(){
+        return this.searchText;
+    }
+    public void setSearchReturn(String searchText){
+        this.searchText = searchText;
     }
 }
