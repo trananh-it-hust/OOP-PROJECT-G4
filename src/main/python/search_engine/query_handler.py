@@ -149,7 +149,7 @@ class QueryHandler:
         for term in terms:
             words = term.split()
             for word in words:
-                if word.startswith('-'):
+                if word.startswith('-') and len(word):
                     not_including.append(word[1:])
                 else:
                     queries.append(word)
@@ -187,8 +187,8 @@ class QueryHandler:
         return json.dumps(response)
 
 # if __name__ == '__main__':
-#     st = 'elon -twitter or solana'
+#     st = 'elon - twitter or solana'
 #     queryhandler = QueryHandler()
 #     queries, not_including = queryhandler.parse_query(st)
-#     print(queryhandler.query(st))
+#     print(not_including)
     
