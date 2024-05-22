@@ -1,7 +1,5 @@
 package com.oop.controller;
 
-
-import com.oop.model.Item;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,6 +27,7 @@ public abstract class ASearchPage {
     protected Parent root;
     protected int NumberPage;
     protected ArrayList<Objects> searchResultList;
-    public  abstract void addSuggestions(List<String> suggestionsResult) throws IOException;
+
+    public abstract void addSuggestions(List<String> suggestionsResult) throws IOException;
 
 }

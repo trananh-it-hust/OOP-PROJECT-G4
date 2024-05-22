@@ -243,7 +243,7 @@ public class SearchController extends ASearchPage implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        searchField.setOnKeyPressed(event -> {
+        searchField.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 try {
                     continueSearch(event);
