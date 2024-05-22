@@ -1,11 +1,22 @@
 from flask import Flask, request, jsonify
-from search_engine.query_handler import QueryHandler
 import time
 import spacy
+import pandas as pd
 from Server_trả_gợi_ý import handle_time
 from Server_trả_gợi_ý import handle
+from get_data_stats import get_data_stats
+from search_engine.query_handler import QueryHandler
+
+
 
 app = Flask(__name__)
+
+# API stats
+df = pd.read_csv('./src/main/resources/data/all_data.csv')
+@app.route('/stats', methods=['GET'])
+def stats():
+    return get_data_stats(df=df)
+
 
 # API search
 @app.route('/search', methods=['GET'])
