@@ -14,19 +14,12 @@ import java.util.Set;
 import java.util.Vector;
 
 import javafx.scene.control.Alert;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-/*
-Lợi ích của việc sử dụng cú pháp diamond: cú pháp diamond  List<String> res = new ArrayList<>();
-Gọn gàng và dễ đọc hơn: Giảm bớt sự lặp lại không cần thiết của kiểu dữ liệu, làm cho mã nguồn dễ đọc và hiểu hơn.
-
-Giảm lỗi: Giảm thiểu khả năng lỗi khi khai báo kiểu dữ liệu không nhất quán giữa phần bên trái và bên phải của dấu bằng (=).
-
-Dễ bảo trì: Khi thay đổi kiểu dữ liệu, bạn chỉ cần thay đổi ở một nơi (phần khai báo bên trái), không cần thay đổi ở cả hai nơi.
- */
 public class APICaller {
     // Lấy gợi ý
     public static List<String> querySuggest(String input)
@@ -46,7 +39,8 @@ public class APICaller {
     public static List<Item> getSearchResult(String input) throws ParseException, IOException, URISyntaxException {
 
         List<Item> results = new ArrayList<>();
-        StringBuffer jsonContent = connectAndGetRawData("GET", "http://localhost:8000/search?q=", input);
+        StringBuffer jsonContent = connectAndGetRawData("GET",
+                "http://localhost:8000/search?byTitle=1&semanticSearch=0&q=", input);
         String s = jsonContent.toString().replace("NaN", "\"None\"");
         JSONObject jo = (JSONObject) new JSONParser().parse(s);
         JSONArray ja = (JSONArray) jo.get("results");
@@ -116,6 +110,36 @@ public class APICaller {
             }
             result.put(trend, v);
         }
+        return result;
+    }
+
+    // Get statistic
+    public static HashMap<String, Vector<String>> getStats()
+            throws IOException, URISyntaxException, ParseException {
+        HashMap<String, Vector<String>> result = new HashMap<>();
+        String content = connectAndGetRawData("GET", "http://localhost:8000/stats", "").toString();
+        JSONObject jo = (JSONObject) new JSONParser().parse(content);
+        String articleCount, s;
+        int count;
+        Vector<String> vct = new Vector<>();
+        JSONObject t;
+        String keys[] = { "articleCount", "website_source", "authors", "category", "tags" };
+
+        articleCount = jo.get("articleCount").toString();
+        vct.add(articleCount);
+        result.put("Article count", vct);
+
+        for (String key : keys) {
+            vct = new Vector<>();
+            t = (JSONObject) jo.get(key);
+            for (Object o : t.keySet()) {
+                s = o.toString();
+                count = (int) t.get(s);
+                vct.add(s + ": " + String.valueOf(count));
+            }
+            result.put(key, vct);
+        }
+
         return result;
     }
 
