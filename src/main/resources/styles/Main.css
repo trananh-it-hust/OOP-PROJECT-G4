@@ -1,11 +1,37 @@
-#isloading {
-  -fx-opacity: 0;
+#mainContainer {
+  -fx-background-color: rgb(243, 235, 235);
 }
-#infoData {
-  -fx-border-color: black;
-  -fx-background-color: white;
+#searchField {
+  -fx-background-color: rgb(187, 225, 250);
+  -fx-border-color: rgb(15, 76, 117);
   -fx-border-width: 1;
   -fx-border-radius: 5;
-  -fx-background-radius: 5;
-  -fx-padding: 10px;
+  -fx-background-radius: 10px;
+  -fx-text-fill: rgb(3, 81, 122);
+  -fx-text-weight: bold;
+}
+#suggestions {
+  -fx-background-color: rgb(187, 225, 250);
+  -fx-border-color: rgb(15, 76, 117);
+  -fx-border-width: 0px 1px 0px 1px;
+  -fx-border-radius: 0px 0px 10px 10px;
+  -fx-background-radius: 0px 0px 10px 10px;
+  -fx-text-fill: rgb(27, 38, 44);
+}
+#titleMain {
+  -fx-font-size: 35px;
+  -fx-font-weight: bold;
+  -fx-text-alignment: center;
+  -fx-fill: rgb(15, 76, 117);
+}
+#searchContainer {
+  -fx-background-color: rgb(187, 225, 250);
+  -fx-border-color: rgb(15, 76, 117);
+  -fx-border-width: 1px 1px 1px 0px;
+  -fx-border-radius: 0px 10px 10px 0px;
+  -fx-background-radius: 0px 10px 10px 0px;
+  -fx-cursor: hand;
+}
+.button:hover {
+  -fx-background-color: rgb(255, 255, 255) !important;
 }

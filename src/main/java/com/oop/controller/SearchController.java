@@ -3,6 +3,8 @@ package com.oop.controller;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -135,6 +137,8 @@ public class SearchController extends ASearchPage implements Initializable {
         for (String suggestion : suggestionsResult) {
             VBox suggestionField = new VBox();
             Label suggestionLabel = new Label(suggestion);
+            suggestionField
+                    .setStyle("-fx-background-color: rgb(15, 76, 117);-fx-text-fill: rgb(255, 255, 255);");
             suggestionField.getChildren().add(suggestionLabel);
             suggestionField.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -156,7 +160,8 @@ public class SearchController extends ASearchPage implements Initializable {
             suggestionField.setOnMouseExited(new EventHandler<Event>() {
                 @Override
                 public void handle(Event event) {
-                    suggestionField.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+                    suggestionField.setStyle(
+                            "-fx-background-color: rgb(15, 76, 117);-fx-text-fill: rgb(255, 255, 255);");
                 }
             });
             suggestions.getChildren().add(suggestionField);
@@ -169,7 +174,7 @@ public class SearchController extends ASearchPage implements Initializable {
         if (PageNumber < searchResultList.size() / totalResultsPerPage) {
             PageNumber++;
             addSearchResult(searchResultList);
-            currentPage.setText("Page: " + PageNumber);
+            currentPage.setText("" + PageNumber + "/" + Math.max(searchResultList.size() / totalResultsPerPage, 1));
 
         }
     }
@@ -179,7 +184,7 @@ public class SearchController extends ASearchPage implements Initializable {
         if (PageNumber > 1) {
             PageNumber--;
             addSearchResult(searchResultList);
-            currentPage.setText("Page: " + PageNumber);
+            currentPage.setText("" + PageNumber + "/" + Math.max(searchResultList.size() / totalResultsPerPage, 1));
         }
     }
 
@@ -190,23 +195,41 @@ public class SearchController extends ASearchPage implements Initializable {
         VBox scrollableContent = new VBox(); // Tạo VBox để chứa nội dung cuộn
         for (int i = startIndex; i < endIndex; i++) {
             VBox itemNode = createItemNode(itemList.get(i));
+            itemNode.getStyleClass().add("itemNode");
             scrollableContent.getChildren().add(itemNode);
         }
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(scrollableContent);
-        scrollPane.setPrefWidth(485);
-        scrollPane.setPrefHeight(250);
+        scrollPane.setStyle("-fx-padding: 10px 0px 0px 10px;-fx-boder-width: 0px !important;");
+        scrollPane.setPrefWidth(478);
+        scrollPane.setPrefHeight(780);
         searchResults.getChildren().add(scrollPane);
     }
 
     private VBox createItemNode(Item item) {
         Hyperlink hyperlink = new Hyperlink(item.getArticleLink());
         hyperlink.setOnAction(event -> openWebView(item.getArticleLink()));
-        Text title = new Text(item.getArticleTitle());
-        Text source = new Text("Source: " + item.getWebsiteSource());
-        Text date = new Text("Date: " + item.getCreationDate());
-        TextFlow content = createTextFlow(item.getContent().substring(0, Math.min(item.getContent().length(), 100)));
+        //
+        TextFlow title = createTextFlow(item.getArticleTitle());
+        title.getStyleClass().add("title");
+        //
+        String dateTimeString = item.getCreationDate().toString();
+        DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, originalFormatter);
+        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = dateTime.format(newFormatter);
+        Text date = new Text("" + formattedDate);
+        date.getStyleClass().add("date");
+        //
+        TextFlow content = createTextFlow(
+                item.getContent().substring(0, Math.min(item.getContent().length(), 250)) + " ...");
+        content.setMinWidth(740);
+        content.getStyleClass().add("content");
+        //
         Button detailButton = new Button("Detail");
+        detailButton.setStyle(
+                "-fx-background-color: rgb(15, 76, 117); -fx-text-fill: rgb(187, 225, 250); -fx-font-weight: bold;");
+        //
         detailButton.setOnAction(event -> {
             try {
                 goDetailPage(event, item);
@@ -222,7 +245,7 @@ public class SearchController extends ASearchPage implements Initializable {
                 e.printStackTrace();
             }
         });
-        VBox itemNode = new VBox(title, hyperlink, source, date, content, detailButton);
+        VBox itemNode = new VBox(title, hyperlink, date, content, detailButton);
         itemNode.getStyleClass().add("itemNode");
         itemNode.setSpacing(5);
         itemNode.setPadding(new Insets(5));
@@ -273,7 +296,7 @@ public class SearchController extends ASearchPage implements Initializable {
 
         categorySort.setItems(criteriaList);
         categoryText.setText("Category");
-        currentPage.setText("Page: " + PageNumber);
+        currentPage.setText("" + PageNumber + "/" + Math.max(searchResultList.size() / totalResultsPerPage, 1));
     }
 
     private void openWebView(String url) {

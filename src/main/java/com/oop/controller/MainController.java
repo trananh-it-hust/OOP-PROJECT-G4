@@ -10,6 +10,8 @@ import org.json.simple.parser.ParseException;
 
 import com.oop.model.APICaller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,8 +27,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class MainController {
+
+    private String searchQuery;
+
+    private static final int IDLE_TIMEOUT = 500;
+    private Timeline idleTimeline;
+    private String lastSearchQuery;
 
     @FXML
     private TextField searchField;
@@ -61,10 +70,11 @@ public class MainController {
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
         for (String suggestion : suggestionsResult) {
-            System.out.println("Suggestion: " + suggestion);
             VBox suggestionField = new VBox();
             Label suggestionLabel = new Label(suggestion);
             suggestionField.getChildren().add(suggestionLabel);
+            suggestionField.setStyle(
+                    "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
             suggestionField.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -79,13 +89,15 @@ public class MainController {
             suggestionField.setOnMouseEntered(new EventHandler<Event>() {
                 @Override
                 public void handle(Event event) {
-                    suggestionField.setStyle("-fx-border-color: #808080;-fx-background-color: #F0F8FF;");
+                    suggestionField.setStyle(
+                            "-fx-background-color: #dae7f3;-fx-background-radius: 10px;-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 1px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
                 }
             });
             suggestionField.setOnMouseExited(new EventHandler<Event>() {
                 @Override
                 public void handle(Event event) {
-                    suggestionField.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+                    suggestionField.setStyle(
+                            "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
                 }
             });
             suggestions.getChildren().add(suggestionField);
@@ -93,8 +105,30 @@ public class MainController {
         suggestions.setCursor(Cursor.HAND);
     }
 
+    private void handleIdleEvent() {
+        String searchQuery = searchField.getText();
+        if (searchQuery.equals(lastSearchQuery)) {
+            idleTimeline.stop();
+            return;
+        }
+        lastSearchQuery = searchQuery;
+        System.out.println("Searching for: " + searchQuery);
+        List<String> suggestionsResults = new ArrayList<String>();
+        try {
+            suggestionsResults = APICaller.querySuggest(searchQuery);
+        } catch (URISyntaxException | IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            addSuggestions(suggestionsResults);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void initialize() throws IOException, ParseException {
         // Thêm lắng nghe sự kiện cho TextField khi scene được tạo
+
         searchField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -104,22 +138,15 @@ public class MainController {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    String searchQuery = searchField.getText();
-                    List<String> suggestionsResults = new ArrayList<String>();
-                    try {
-                        suggestionsResults = APICaller.querySuggest(searchQuery);
-                    } catch (URISyntaxException | IOException | ParseException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        addSuggestions(suggestionsResults);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
-
             }
+        });
+        idleTimeline = new Timeline(new KeyFrame(Duration.millis(IDLE_TIMEOUT), event -> {
+            handleIdleEvent();
+        }));
+        idleTimeline.setCycleCount(Timeline.INDEFINITE);
+        searchField.setOnKeyTyped(event -> {
+            idleTimeline.playFromStart();
         });
     }
 }

@@ -46,6 +46,7 @@ public class DetailController {
             return;
         }
         detailContent = APICaller.getEntities(item.getContent());
+        System.out.println(detailContent);
         createDetailContent();
     }
 
