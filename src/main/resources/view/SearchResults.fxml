@@ -15,7 +15,7 @@
    <children>
       <AnchorPane layoutX="-1.0" layoutY="-2.0" prefHeight="62.0" prefWidth="600.0" style="-fx-background-color: #2c5a8d;">
          <children>
-            <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="396.0" layoutY="29.0" prefWidth="150.0" />
+            <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="447.0" layoutY="29.0" prefHeight="25.0" prefWidth="99.0" />
             <Button contentDisplay="CENTER" layoutX="21.0" layoutY="25.0" mnemonicParsing="false" onAction="#goHomePage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #74B4DC;">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
@@ -55,7 +55,7 @@
             </ImageView>
          </graphic></Button>
       <VBox fx:id="searchResults" layoutX="58.0" layoutY="75.0" prefHeight="250.0" prefWidth="485.0" style="-fx-background-color: #FFFFFF;" />
-      <Text fx:id="currentPage" layoutX="368.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #07f7f7; ;" text="Page: " wrappingWidth="50.0">
+      <Text fx:id="currentPage" layoutX="36.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #07f7f7; ;" text="Page: " wrappingWidth="99.0">
          <font>
             <Font size="14.0" />
          </font></Text>

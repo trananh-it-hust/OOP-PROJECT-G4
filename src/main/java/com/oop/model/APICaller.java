@@ -6,12 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import javafx.scene.control.Alert;
 
@@ -37,7 +32,11 @@ public class APICaller {
 
     // Lấy tìm kiếm
     public static List<Item> getSearchResult(String input) throws ParseException, IOException, URISyntaxException {
-
+        try {
+            checkConnectNetWork();
+        } catch (NetWorkException e) {
+            throw new RuntimeException(e);
+        }
         List<Item> results = new ArrayList<>();
         StringBuffer jsonContent = connectAndGetRawData("GET",
                 "http://localhost:8000/search?byTitle=1&semanticSearch=0&q=", input);

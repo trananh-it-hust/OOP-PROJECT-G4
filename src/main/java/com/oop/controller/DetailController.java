@@ -29,11 +29,13 @@ public class DetailController {
     @FXML
     private TextFlow contentBox;
     private String searchText;
+    private int seachPageBeforeGo;
     public void returnSearchPage(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
         Parent root = loader.load(); // Load content from SearchResults.fxml
         SearchController searchController = loader.getController();
-        searchController.setSearchText(getSearchResult()); // Truyền nội dung sang SearchController
+        searchController.setSearchPage(this.seachPageBeforeGo);
+        searchController.setSearchText(this.searchText); // Truyền nội dung sang SearchController
         searchController.initialize(null, null);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
@@ -80,10 +82,10 @@ public class DetailController {
     public void setItem(Item item) {
         this.item = item;
     }
-    public String getSearchResult(){
-        return this.searchText;
+    void setPageNumberReturn(int pageNumber){
+        this.seachPageBeforeGo = pageNumber;
     }
-    public void setSearchReturn(String searchText){
+    void setSearchQueryReturn(String searchText){
         this.searchText = searchText;
     }
 }

@@ -7,8 +7,10 @@ import java.util.*;
 
 import com.oop.model.NetWorkException;
 import com.oop.model.Item;
+import com.oop.sorter.DateSorter;
+import com.oop.sorter.TitleSorter;
 import com.opencsv.exceptions.CsvValidationException;
-
+import com.oop.sorter.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,7 +34,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.simple.parser.ParseException;
 
-public class SearchController extends ASearchPage implements Initializable {
+public class SearchController implements Initializable {
 
     @FXML
     private TextField searchField;
@@ -49,7 +51,10 @@ public class SearchController extends ASearchPage implements Initializable {
     @FXML
     private Text categoryText;
     private final int totalResultsPerPage = 10;
-    private final ObservableList<String> criteriaList = FXCollections.observableArrayList("Descending post date");
+    private final ObservableList<String> criteriaList = FXCollections.observableArrayList
+            (
+                    "Sort by title",
+                    "Sort by date");
 
     private Stage stage;
 
@@ -59,24 +64,24 @@ public class SearchController extends ASearchPage implements Initializable {
 
     private ArrayList<Item> searchResultList;
 
-    private int PageNumber = 1;
-
-    public void setChoice() {
-        String choiceChosen = categorySort.getValue();
-        if (choiceChosen != null) {
-            switch (choiceChosen) {
-                case "Descending posting date":
-                    filterByUpdateDateDescending();
-                    break;
-            }
+    private int pageNumber = 1;
+    @FXML
+    private void handleSortCriteriaChange() {
+        String selectedCriteria = categorySort.getValue();
+        if (selectedCriteria.equals("Sort by title")) {
+            // Sắp xếp dữ liệu theo tiêu đề bài viết
+            TitleSorter sorter = new TitleSorter();
+            searchResultList = (ArrayList<Item>) sorter.sort(searchResultList);
+            addSearchResult(searchResultList);
+        } else if (selectedCriteria.equals("Sort by date")) {
+            // Sắp xếp dữ liệu theo ngày đăng
+            DateSorter sorter = new DateSorter();
+            searchResultList = (ArrayList<Item>) sorter.sort(searchResultList);
+            addSearchResult(searchResultList);
         }
+        // Có thể thêm các tiêu chí sắp xếp khác ở đây
     }
 
-    public void filterByUpdateDateDescending() {
-        Comparator<Item> dateComparator = Comparator.comparing(Item::getCreationDate).reversed();
-        searchResultList.sort(dateComparator);
-        addSearchResult(searchResultList);
-    }
 
     public void goHomePage(Event event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Main.fxml"))); //Đảm bảo đối tượng truyền vào không phải là null
@@ -93,7 +98,8 @@ public class SearchController extends ASearchPage implements Initializable {
         DetailController detailController = loader.getController();
         detailController.setItem(item);
         detailController.initialize();
-        detailController.setSearchReturn(this.searchField.getText());
+        detailController.setPageNumberReturn(this.pageNumber);
+        detailController.setSearchQueryReturn(this.searchField.getText());
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -120,8 +126,6 @@ public class SearchController extends ASearchPage implements Initializable {
             alert.showAndWait();
         }
     }
-
-    @Override
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
         for (String suggestion : suggestionsResult) {
@@ -145,27 +149,26 @@ public class SearchController extends ASearchPage implements Initializable {
 
     @FXML
     private void nextPage() {
-        if (PageNumber < searchResultList.size() / totalResultsPerPage) {
-            PageNumber++;
+        if (pageNumber < searchResultList.size() / totalResultsPerPage) {
+            pageNumber++;
             addSearchResult(searchResultList);
-            currentPage.setText("Page: " + PageNumber);
+            currentPage.setText("Page: " + pageNumber);
 
         }
     }
 
     @FXML
     private void prevPage() {
-        if (PageNumber > 1) {
-            PageNumber--;
+        if (pageNumber > 1) {
+            pageNumber--;
             addSearchResult(searchResultList);
-            currentPage.setText("Page: " + PageNumber);
+            currentPage.setText("Page: " + pageNumber);
         }
     }
-
     private void addSearchResult(List<Item> itemList) {
         searchResults.getChildren().clear();
-        int startIndex = totalResultsPerPage * (PageNumber - 1);
-        int endIndex = Math.min(totalResultsPerPage * PageNumber, itemList.size());
+        int startIndex = totalResultsPerPage * (pageNumber - 1);
+        int endIndex = Math.min(totalResultsPerPage * pageNumber, itemList.size());
         VBox scrollableContent = new VBox(); // Tạo VBox để chứa nội dung cuộn
         for (int i = startIndex; i < endIndex; i++) {
             VBox itemNode = createItemNode(itemList.get(i));
@@ -189,15 +192,8 @@ public class SearchController extends ASearchPage implements Initializable {
         detailButton.setOnAction(event -> {
             try {
                 goDetailPage(event, item);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (CsvValidationException e) {
-                e.printStackTrace();
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
+            } catch (IOException | CsvValidationException | java.text.ParseException | URISyntaxException |
+                     ParseException e) {
                 e.printStackTrace();
             }
         });
@@ -250,10 +246,10 @@ public class SearchController extends ASearchPage implements Initializable {
     }
 
     private void setupUIComponents() {
-
         categorySort.setItems(criteriaList);
         categoryText.setText("Category");
-        currentPage.setText("Page: " + PageNumber);
+        currentPage.setText("Page: " + pageNumber);
+        categorySort.setOnAction(event -> handleSortCriteriaChange());
     }
 
     private void openWebView(String url) {
@@ -277,5 +273,9 @@ public class SearchController extends ASearchPage implements Initializable {
 
     public void setSearchText(String searchText) {
         searchField.setText(searchText);
+    }
+
+    public void setSearchPage(int pageBefore) {
+        this.pageNumber = pageBefore;
     }
 }

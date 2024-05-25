@@ -1,11 +1,13 @@
 package com.oop.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javafx.scene.layout.VBox;
+import org.jetbrains.annotations.NotNull;
 
-public class Item {
+public class Item implements Comparable<Item> {
     private String articleLink;
     private String websiteSource;
     private String articleType;
@@ -23,8 +25,8 @@ public class Item {
     }
 
     public Item(String articleLink, String websiteSource, String articleType, String articleTitle,
-            String content, String creationDate, String author, String category, String tags,
-            String summary) {
+                String content, String creationDate, String author, String category, String tags,
+                String summary) {
         this.articleLink = articleLink;
         this.websiteSource = websiteSource;
         this.articleType = articleType;
@@ -128,5 +130,10 @@ public class Item {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    @Override
+    public int compareTo(@NotNull Item o) {
+        return 0;
     }
 }
