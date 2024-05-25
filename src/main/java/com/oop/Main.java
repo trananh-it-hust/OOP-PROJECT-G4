@@ -2,6 +2,7 @@ package com.oop;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Objects;
 
 import com.oop.model.Item;
 import com.opencsv.exceptions.CsvValidationException;
@@ -18,7 +19,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             // load the FXML resource
-            Parent root = FXMLLoader.load(getClass().getResource("/view/Main.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Main.fxml")));
 
             // create a scene
             primaryStage.setScene(new Scene(root, 800, 600));

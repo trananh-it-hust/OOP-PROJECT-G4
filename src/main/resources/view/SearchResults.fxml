@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TextField?>
@@ -9,19 +8,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@/styles/SearchResults.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.SearchController">
    <children>
       <AnchorPane prefHeight="62.0" prefWidth="800.0" style="-fx-background-color: rgb(187, 225, 250);">
          <children>
             <Button contentDisplay="CENTER" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goHomePage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #74B4DC;">
+               <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="447.0" layoutY="29.0" prefHeight="25.0" prefWidth="99.0" />
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../image/home-removebg-preview - Copy.png" />
                      </image>
                   </ImageView>
-               </graphic></Button>
+               </graphic>
+            </Button>
             <TextField fx:id="searchField" layoutX="65.0" layoutY="15.0" prefHeight="32.0" prefWidth="334.0" />
             <Button layoutX="403.0" layoutY="15.0" mnemonicParsing="false" onAction="#continueSearch" prefHeight="32.0" prefWidth="7.0" style="-fx-background-color: #30BB88; -fx-background-radius: 90;">
                <graphic>
@@ -34,6 +34,7 @@
             </Button>
             <Text fx:id="categoryText" layoutX="607.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
             <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="641.0" layoutY="18.0" prefWidth="150.0" />
+            <TextField fx:id="searchField" layoutX="74.0" layoutY="25.0" prefHeight="32.0" prefWidth="203.0" />
          </children>
       </AnchorPane>
       <Button id="nextPage" layoutX="717.0" layoutY="554.0" mnemonicParsing="false" onAction="#nextPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" textFill="#d02323">
@@ -58,7 +59,8 @@
       <Text fx:id="currentPage" layoutX="669.0" layoutY="575.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="currentPage" wrappingWidth="39.999999999999886">
          <font>
             <Font size="14.0" />
-         </font></Text>
+         </font>
+      </Text>
       <VBox fx:id="suggestions" layoutX="63.0" layoutY="44.0" prefHeight="96.0" prefWidth="334.0" />
    </children>
 </AnchorPane>
