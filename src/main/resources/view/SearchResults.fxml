@@ -7,16 +7,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1d3557;" stylesheets="@/styles/SearchResults.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.SearchController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@/styles/SearchResults.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.SearchController">
    <children>
-      <AnchorPane layoutX="-1.0" layoutY="-2.0" prefHeight="62.0" prefWidth="600.0" style="-fx-background-color: #2c5a8d;">
+      <AnchorPane prefHeight="62.0" prefWidth="800.0" style="-fx-background-color: rgb(187, 225, 250);">
          <children>
-            <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="396.0" layoutY="29.0" prefWidth="150.0" />
-            <Button contentDisplay="CENTER" layoutX="21.0" layoutY="25.0" mnemonicParsing="false" onAction="#goHomePage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #74B4DC;">
+            <Button contentDisplay="CENTER" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goHomePage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #74B4DC;">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -24,8 +22,8 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <TextField fx:id="searchField" layoutX="77.0" layoutY="25.0" prefHeight="32.0" prefWidth="203.0" />
-            <Button layoutX="300.0" layoutY="25.0" mnemonicParsing="false" onAction="#continueSearch" prefHeight="32.0" prefWidth="7.0" style="-fx-background-color: #30BB88; -fx-background-radius: 90;">
+            <TextField fx:id="searchField" layoutX="65.0" layoutY="15.0" prefHeight="32.0" prefWidth="334.0" />
+            <Button layoutX="403.0" layoutY="15.0" mnemonicParsing="false" onAction="#continueSearch" prefHeight="32.0" prefWidth="7.0" style="-fx-background-color: #30BB88; -fx-background-radius: 90;">
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="24.0">
                      <image>
@@ -34,31 +32,33 @@
                   </ImageView>
                </graphic>
             </Button>
+            <Text fx:id="categoryText" layoutX="607.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+            <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="641.0" layoutY="18.0" prefWidth="150.0" />
          </children>
       </AnchorPane>
-      <VBox fx:id="suggestions" layoutX="72.0" layoutY="46.0" prefHeight="96.0" prefWidth="203.0" />
-      <Line endX="424.5" layoutX="136.0" layoutY="61.0" startX="-100.0" />
-      <Button id="nextPage" layoutX="503.0" layoutY="338.0" mnemonicParsing="false" onAction="#nextPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" textFill="#d02323">
+      <Button id="nextPage" layoutX="717.0" layoutY="554.0" mnemonicParsing="false" onAction="#nextPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" textFill="#d02323">
          <graphic>
             <ImageView fitHeight="25.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../image/icons-next-page.png" />
                </image>
             </ImageView>
-         </graphic></Button>
-      <Button id="prevPage" layoutX="431.0" layoutY="338.0" mnemonicParsing="false" onAction="#prevPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;">
+         </graphic>
+      </Button>
+      <Button id="prevPage" layoutX="622.0" layoutY="554.0" mnemonicParsing="false" onAction="#prevPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;">
          <graphic>
             <ImageView fitHeight="24.0" fitWidth="24.0">
                <image>
                   <Image url="@../image/icons8-back-50.png" />
                </image>
             </ImageView>
-         </graphic></Button>
-      <VBox fx:id="searchResults" layoutX="58.0" layoutY="75.0" prefHeight="250.0" prefWidth="485.0" style="-fx-background-color: #FFFFFF;" />
-      <Text fx:id="currentPage" layoutX="368.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #07f7f7; ;" text="Page: " wrappingWidth="50.0">
+         </graphic>
+      </Button>
+      <VBox fx:id="searchResults" layoutX="6.0" layoutY="75.0" prefHeight="478.0" prefWidth="800.0" />
+      <Text fx:id="currentPage" layoutX="669.0" layoutY="575.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="currentPage" wrappingWidth="39.999999999999886">
          <font>
             <Font size="14.0" />
          </font></Text>
-      <Text fx:id="categoryText" layoutX="471.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <VBox fx:id="suggestions" layoutX="63.0" layoutY="44.0" prefHeight="96.0" prefWidth="334.0" />
    </children>
 </AnchorPane>
