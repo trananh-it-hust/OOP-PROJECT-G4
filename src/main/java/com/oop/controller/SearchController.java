@@ -41,11 +41,14 @@ public class SearchController implements Initializable {
 
     @FXML
     private VBox suggestions;
-
+    @FXML
+    private Button homePage;
     @FXML
     private VBox searchResults;
     @FXML
     private ChoiceBox<String> categorySort;
+    @FXML
+    private Button continueButton;
     @FXML
     private Text currentPage;
     @FXML
@@ -54,78 +57,74 @@ public class SearchController implements Initializable {
     private final ObservableList<String> criteriaList = FXCollections.observableArrayList
             (
                     "Sort by title",
-                    "Sort by date");
+                    "Sort by date",
+                    "Sort by author");
 
-    private Stage stage;
-
-    private Scene scene;
-
-    private Parent root;
+//    private Stage stage;
+//
+//    private Scene scene;
+//
+//    private Parent root;
 
     private ArrayList<Item> searchResultList;
 
     private int pageNumber = 1;
+
     @FXML
     private void handleSortCriteriaChange() {
         String selectedCriteria = categorySort.getValue();
-        if (selectedCriteria.equals("Sort by title")) {
-            // Sắp xếp dữ liệu theo tiêu đề bài viết
-            TitleSorter sorter = new TitleSorter();
-            searchResultList = (ArrayList<Item>) sorter.sort(searchResultList);
-            addSearchResult(searchResultList);
-        } else if (selectedCriteria.equals("Sort by date")) {
-            // Sắp xếp dữ liệu theo ngày đăng
-            DateSorter sorter = new DateSorter();
-            searchResultList = (ArrayList<Item>) sorter.sort(searchResultList);
-            addSearchResult(searchResultList);
-        }
-        // Có thể thêm các tiêu chí sắp xếp khác ở đây
-    }
-
-
-    public void goHomePage(Event event) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Main.fxml"))); //Đảm bảo đối tượng truyền vào không phải là null
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void goDetailPage(Event event, Item item)
-            throws IOException, CsvValidationException, java.text.ParseException, URISyntaxException, ParseException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Detail.fxml"));
-        root = loader.load();
-        DetailController detailController = loader.getController();
-        detailController.setItem(item);
-        detailController.initialize();
-        detailController.setPageNumberReturn(this.pageNumber);
-        detailController.setSearchQueryReturn(this.searchField.getText());
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void continueSearch(Event event) throws IOException {
-        String searchText = searchField.getText().trim();
-        if (!searchText.isEmpty()) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
-            root = loader.load();
-            SearchController searchController = loader.getController();
-            searchController.setSearchText(searchText);
-            searchController.initialize(null, null);
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText(null);
-            alert.setContentText("Please enter something in the search box before clicking search!");
-            alert.showAndWait();
+        switch (selectedCriteria) {
+            case "Sort by title": {
+                TitleSorter sorter = new TitleSorter();
+                searchResultList = (ArrayList<Item>) sorter.sort(searchResultList);
+                addSearchResult(searchResultList);
+                break;
+            }
+            case "Sort by date": {
+                DateSorter sorter = new DateSorter();
+                searchResultList = (ArrayList<Item>) sorter.sort(searchResultList);
+                addSearchResult(searchResultList);
+                break;
+            }
+            case "Sort by author": {
+                AuthorSorter sorter = new AuthorSorter();
+                searchResultList = (ArrayList<Item>) sorter.sort(searchResultList);
+                addSearchResult(searchResultList);
+                break;
+            }
         }
     }
+
+
+//    public void goHomePage(Event event) throws IOException {
+//        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Main.fxml"))); //Đảm bảo đối tượng truyền vào không phải là null
+//        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//        scene = new Scene(root);
+//        stage.setScene(scene);
+//        stage.show();
+//    }
+
+//    public void continueSearch(Event event) throws IOException {
+//        String searchText = searchField.getText().trim();
+//        if (!searchText.isEmpty()) {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
+//            root = loader.load();
+//            SearchController searchController = loader.getController();
+//            searchController.setSearchText(searchText);
+//            searchController.initialize(null, null);
+//            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//            scene = new Scene(root);
+//            stage.setScene(scene);
+//            stage.show();
+//        } else {
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setTitle("Warning");
+//            alert.setHeaderText(null);
+//            alert.setContentText("Please enter something in the search box before clicking search!");
+//            alert.showAndWait();
+//        }
+//    }
+
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
         for (String suggestion : suggestionsResult) {
@@ -135,7 +134,7 @@ public class SearchController implements Initializable {
             suggestionField.setOnMouseClicked(event -> {
                 searchField.setText(suggestionLabel.getText());
                 try {
-                    continueSearch(event);
+                    SwitchController.continueSearch(this,event);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -165,6 +164,7 @@ public class SearchController implements Initializable {
             currentPage.setText("Page: " + pageNumber);
         }
     }
+
     private void addSearchResult(List<Item> itemList) {
         searchResults.getChildren().clear();
         int startIndex = totalResultsPerPage * (pageNumber - 1);
@@ -191,7 +191,7 @@ public class SearchController implements Initializable {
         Button detailButton = new Button("Detail");
         detailButton.setOnAction(event -> {
             try {
-                goDetailPage(event, item);
+                SwitchController.goDetailPage(this, event, item, this.pageNumber, this.searchField.getText());
             } catch (IOException | CsvValidationException | java.text.ParseException | URISyntaxException |
                      ParseException e) {
                 e.printStackTrace();
@@ -206,7 +206,7 @@ public class SearchController implements Initializable {
 
     private TextFlow createTextFlow(String content) {
         TextFlow textFlow = new TextFlow();
-        content = content+".....";
+        content = content + ".....";
         Text text = new Text(content);
         textFlow.getChildren().add(text);
         textFlow.setMaxWidth(450);
@@ -222,7 +222,7 @@ public class SearchController implements Initializable {
         searchField.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 try {
-                    continueSearch(event);
+                    SwitchController.continueSearch(this,event);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -250,7 +250,23 @@ public class SearchController implements Initializable {
         categoryText.setText("Category");
         currentPage.setText("Page: " + pageNumber);
         categorySort.setOnAction(event -> handleSortCriteriaChange());
+        homePage.setOnAction(event -> {
+            try {
+                SwitchController.goHomePage(this,event);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        continueButton.setOnAction(event -> {
+            try{
+                SwitchController.continueSearch(this,event);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
+
 
     private void openWebView(String url) {
         try {
@@ -277,5 +293,8 @@ public class SearchController implements Initializable {
 
     public void setSearchPage(int pageBefore) {
         this.pageNumber = pageBefore;
+    }
+    public TextField getSearchField(){
+        return this.searchField;
     }
 }
