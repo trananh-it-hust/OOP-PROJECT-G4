@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.oop.model.NetWorkException;
 import javafx.scene.control.Alert;
 import org.json.simple.parser.ParseException;
 
@@ -42,20 +43,17 @@ public class MainController {
 
     @FXML
     private VBox suggestions;
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
 
     public void navigateToSearchResultsPage(Event event) throws IOException {
         String searchText = searchField.getText().trim();
         if (!searchText.isEmpty()) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
-            root = loader.load(); // Load content from SearchResults.fxml
+            Parent root = loader.load(); // Load content from SearchResults.fxml
             SearchController searchController = loader.getController();
             searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
             searchController.initialize(null, null);
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         } else {
@@ -100,12 +98,16 @@ public class MainController {
                             "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
                 }
             });
+            suggestionField.setOnMouseEntered((EventHandler<Event>) event -> suggestionField
+                    .setStyle("-fx-border-color: #808080;-fx-background-color: #F0F8FF;"));
+            suggestionField.setOnMouseExited((EventHandler<Event>) event -> suggestionField
+                    .setStyle("-fx-border-color: transparent;-fx-background-color: transparent;"));
             suggestions.getChildren().add(suggestionField);
         }
         suggestions.setCursor(Cursor.HAND);
     }
 
-    private void handleIdleEvent() {
+    private void handleIdleEvent() throws NetWorkException {
         String searchQuery = searchField.getText();
         if (searchQuery.equals(lastSearchQuery)) {
             idleTimeline.stop();
@@ -140,9 +142,14 @@ public class MainController {
                     }
                 }
             }
+
         });
         idleTimeline = new Timeline(new KeyFrame(Duration.millis(IDLE_TIMEOUT), event -> {
-            handleIdleEvent();
+            try {
+                handleIdleEvent();
+            } catch (NetWorkException e) {
+                e.printStackTrace();
+            }
         }));
         idleTimeline.setCycleCount(Timeline.INDEFINITE);
         searchField.setOnKeyTyped(event -> {
