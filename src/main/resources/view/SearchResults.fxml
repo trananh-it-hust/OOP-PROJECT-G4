@@ -16,7 +16,7 @@
       <AnchorPane layoutX="-1.0" layoutY="-2.0" prefHeight="62.0" prefWidth="600.0" style="-fx-background-color: #2c5a8d;">
          <children>
             <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="447.0" layoutY="29.0" prefHeight="25.0" prefWidth="99.0" />
-            <Button contentDisplay="CENTER" layoutX="21.0" layoutY="25.0" mnemonicParsing="false" onAction="#goHomePage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #74B4DC;">
+            <Button fx:id="homePage" contentDisplay="CENTER" layoutX="21.0" layoutY="25.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #74B4DC;">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -24,9 +24,9 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button layoutX="300.0" layoutY="25.0" mnemonicParsing="false" onAction="#continueSearch" prefHeight="32.0" prefWidth="7.0" style="-fx-background-color: #30BB88; -fx-background-radius: 90;">
+            <Button fx:id="continueButton" layoutX="300.0" layoutY="25.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="7.0" style="-fx-background-color: #30BB88; -fx-background-radius: 90;">
                <graphic>
-                  <ImageView fitHeight="24.0" fitWidth="24.0">
+                  <ImageView fx:id="continueSearchButton" fitHeight="24.0" fitWidth="24.0">
                      <image>
                         <Image url="@../image/icons8-search-64.png" />
                      </image>
