@@ -10,15 +10,13 @@ import com.oop.model.APICaller;
 import com.oop.model.Item;
 import com.opencsv.exceptions.CsvValidationException;
 
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-
-public class DetailController extends BaseController{
+public class DetailController extends BaseController {
 
     private Item item;
 
@@ -36,6 +34,7 @@ public class DetailController extends BaseController{
             return;
         }
         detailContent = APICaller.getEntities(item.getContent());
+        System.out.println(detailContent);
         createDetailContent();
     }
 
@@ -60,6 +59,7 @@ public class DetailController extends BaseController{
                 contentBox.getChildren().add(text);
             }
         }
+        contentBox.setStyle("-fx-padding:10px");
     }
 
     public void initialize() throws CsvValidationException, IOException, ParseException, URISyntaxException,
@@ -67,7 +67,7 @@ public class DetailController extends BaseController{
         getDetailData();
         returnButton.setOnAction(event -> {
             try {
-                SwitchController.returnSearchPage(this, event, this.seachPageBeforeGo,this.searchText);
+                SwitchController.returnSearchPage(this, event, this.seachPageBeforeGo, this.searchText);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -77,10 +77,12 @@ public class DetailController extends BaseController{
     public void setItem(Item item) {
         this.item = item;
     }
-    void setPageNumberReturn(int pageNumber){
+
+    void setPageNumberReturn(int pageNumber) {
         this.seachPageBeforeGo = pageNumber;
     }
-    void setSearchQueryReturn(String searchText){
+
+    void setSearchQueryReturn(String searchText) {
         this.searchText = searchText;
     }
 

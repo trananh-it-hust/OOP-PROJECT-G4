@@ -11,6 +11,8 @@ import org.json.simple.parser.ParseException;
 
 import com.oop.model.APICaller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,10 +22,19 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
+public class MainController extends BaseController {
 
-public class MainController extends BaseController{
+    private String searchQuery;
+
+    private static final int IDLE_TIMEOUT = 500;
+    private Timeline idleTimeline;
+    private String lastSearchQuery;
 
     @FXML
     private TextField searchField;
@@ -32,33 +43,71 @@ public class MainController extends BaseController{
     private VBox suggestions;
     @FXML
     private Button searchButton;
+
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
         for (String suggestion : suggestionsResult) {
-            System.out.println("Suggestion: " + suggestion);
             VBox suggestionField = new VBox();
             Label suggestionLabel = new Label(suggestion);
             suggestionField.getChildren().add(suggestionLabel);
-            suggestionField.setOnMouseClicked(event -> {
-                searchField.setText(suggestionLabel.getText());
-                try {
-                    SwitchController.goSearchPage(this,event);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            suggestionField.setStyle(
+                    "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
+            suggestionField.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    searchField.setText(suggestionLabel.getText());
+                    try {
+                        navigateToSearchResultsPage(event);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
-            suggestionField.setOnMouseEntered((EventHandler<Event>) event -> suggestionField.setStyle("-fx-border-color: #808080;-fx-background-color: #F0F8FF;"));
-            suggestionField.setOnMouseExited((EventHandler<Event>) event -> suggestionField.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;"));
+            suggestionField.setOnMouseEntered(new EventHandler<Event>() {
+                @Override
+                public void handle(Event event) {
+                    suggestionField.setStyle(
+                            "-fx-background-color: #dae7f3;-fx-background-radius: 10px;-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 1px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
+                }
+            });
+            suggestionField.setOnMouseExited(new EventHandler<Event>() {
+                @Override
+                public void handle(Event event) {
+                    suggestionField.setStyle(
+                            "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
+                }
+            });
             suggestions.getChildren().add(suggestionField);
         }
         suggestions.setCursor(Cursor.HAND);
+    }
+
+    private void handleIdleEvent() throws NetWorkException {
+        String searchQuery = searchField.getText();
+        if (searchQuery.equals(lastSearchQuery)) {
+            idleTimeline.stop();
+            return;
+        }
+        lastSearchQuery = searchQuery;
+        System.out.println("Searching for: " + searchQuery);
+        List<String> suggestionsResults = new ArrayList<String>();
+        try {
+            suggestionsResults = APICaller.querySuggest(searchQuery);
+        } catch (URISyntaxException | IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            addSuggestions(suggestionsResults);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void initialize() throws IOException, ParseException {
         searchField.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 try {
-                    SwitchController.goSearchPage(this,event);
+                    SwitchController.goSearchPage(this, event);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -80,7 +129,7 @@ public class MainController extends BaseController{
         });
         searchButton.setOnAction(event -> {
             try {
-                SwitchController.goSearchPage(this,event);
+                SwitchController.goSearchPage(this, event);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
