@@ -30,6 +30,7 @@ public class DetailController {
     private TextFlow contentBox;
     private String searchText;
     private int seachPageBeforeGo;
+
     public void returnSearchPage(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
         Parent root = loader.load(); // Load content from SearchResults.fxml
@@ -73,6 +74,7 @@ public class DetailController {
                 contentBox.getChildren().add(text);
             }
         }
+        contentBox.setStyle("-fx-padding:10px");
     }
 
     public void initialize() throws CsvValidationException, IOException, ParseException, URISyntaxException,
@@ -83,10 +85,12 @@ public class DetailController {
     public void setItem(Item item) {
         this.item = item;
     }
-    void setPageNumberReturn(int pageNumber){
+
+    void setPageNumberReturn(int pageNumber) {
         this.seachPageBeforeGo = pageNumber;
     }
-    void setSearchQueryReturn(String searchText){
+
+    void setSearchQueryReturn(String searchText) {
         this.searchText = searchText;
     }
 }
