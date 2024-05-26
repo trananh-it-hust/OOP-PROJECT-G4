@@ -6,8 +6,9 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.oop.model.APICaller;
+import com.oop.manager.SwitchManager;
 import com.oop.model.Item;
+import com.oop.service.APICaller;
 import com.opencsv.exceptions.CsvValidationException;
 
 import javafx.fxml.FXML;
@@ -67,7 +68,7 @@ public class DetailController extends BaseController {
         getDetailData();
         returnButton.setOnAction(event -> {
             try {
-                SwitchController.returnSearchPage(this, event, this.seachPageBeforeGo, this.searchText);
+                SwitchManager.returnSearchPage(this, event, this.seachPageBeforeGo, this.searchText);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -78,11 +79,11 @@ public class DetailController extends BaseController {
         this.item = item;
     }
 
-    void setPageNumberReturn(int pageNumber) {
+    public void setPageNumberReturn(int pageNumber) {
         this.seachPageBeforeGo = pageNumber;
     }
 
-    void setSearchQueryReturn(String searchText) {
+    public void setSearchQueryReturn(String searchText) {
         this.searchText = searchText;
     }
 

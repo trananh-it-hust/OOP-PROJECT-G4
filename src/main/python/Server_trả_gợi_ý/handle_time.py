@@ -7,7 +7,7 @@ def handle_time(tu_khoa,ket_qua_tim_kiem,suggestion_limit,time_limit,start_time)
         return
 
                 
-    with open('OOP-PROJECT-G4\src\main\\resources\data\data.csv', mode='r', encoding='utf-8') as file:
+    with open('./src/main/resources/data/data.csv', mode='r', encoding='utf-8') as file:
         csv_file = csv.reader(file)
         for row in csv_file:
             row_ug=row[0].split('/')
@@ -36,7 +36,7 @@ def handle_time(tu_khoa,ket_qua_tim_kiem,suggestion_limit,time_limit,start_time)
                 break    
     
     if len(ket_qua_tim_kiem) < suggestion_limit and time.time()-start_time<time_limit:
-        with open('OOP-PROJECT-G4\src\main\\resources\data\data.csv', mode='r', encoding='utf-8') as file:
+        with open('./src/main/resources/data/data.csv', mode='r', encoding='utf-8') as file:
             csv_file = csv.reader(file)
             for row in csv_file:
                 row_ug=row[3].split('.')
@@ -62,7 +62,7 @@ def handle_time(tu_khoa,ket_qua_tim_kiem,suggestion_limit,time_limit,start_time)
                 if len(ket_qua_tim_kiem)>=suggestion_limit:
                     break         
     if len(ket_qua_tim_kiem) < suggestion_limit and time.time()-start_time<time_limit:
-        with open('OOP-PROJECT-G4\src\main\\resources\data\data.csv', mode='r', encoding='utf-8') as file:
+        with open('./src/main/resources/data/data.csv', mode='r', encoding='utf-8') as file:
             csv_file = csv.reader(file)
             for row in csv_file:
                 row_ug=row[4].split('.')

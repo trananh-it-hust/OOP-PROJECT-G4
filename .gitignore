@@ -27,3 +27,4 @@ __pycache__/
 
 .venv
 .conda
+data.csv

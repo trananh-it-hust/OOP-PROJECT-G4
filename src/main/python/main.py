@@ -33,10 +33,10 @@ def search():
 def suggestion():
     data = request.args.get('data')
     ket_qua_tim_kiem = []
-    time_limit=0.6
+    time_limit=0.4
     suggestion_limit=5
     start_time = time.time()
-    handle.handle(data,ket_qua_tim_kiem)
+    handle_time.handle_time(data,ket_qua_tim_kiem,suggestion_limit,time_limit,start_time)
     return jsonify({'result':ket_qua_tim_kiem} )
 
 #NER
