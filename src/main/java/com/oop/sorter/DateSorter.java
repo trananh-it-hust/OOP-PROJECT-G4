@@ -5,7 +5,6 @@ import com.oop.model.Item;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -27,14 +26,11 @@ public class DateSorter implements ISorter<Item> {
             sortedList.add(item);
         }
 
-        sortedList.sort(new Comparator<Item>() {
-            @Override
-            public int compare(Item item1, Item item2) {
-                try {
-                    return sdf.parse(item1.getCreationDate()).compareTo(sdf.parse(item2.getCreationDate()));
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException("Invalid date format", e);
-                }
+        sortedList.sort((item1, item2) -> {
+            try {
+                return sdf.parse(item1.getCreationDate()).compareTo(sdf.parse(item2.getCreationDate()));
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Invalid date format", e);
             }
         });
 
