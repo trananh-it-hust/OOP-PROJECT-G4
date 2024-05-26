@@ -10,17 +10,15 @@ import com.oop.model.APICaller;
 import com.oop.model.Item;
 import com.opencsv.exceptions.CsvValidationException;
 
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.stage.Stage;
 
-public class DetailController {
+
+public class DetailController extends BaseController{
 
     private Item item;
 
@@ -28,20 +26,10 @@ public class DetailController {
 
     @FXML
     private TextFlow contentBox;
+    @FXML
+    private Button returnButton;
     private String searchText;
     private int seachPageBeforeGo;
-    public void returnSearchPage(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
-        Parent root = loader.load(); // Load content from SearchResults.fxml
-        SearchController searchController = loader.getController();
-        searchController.setSearchPage(this.seachPageBeforeGo);
-        searchController.setSearchText(this.searchText); // Truyền nội dung sang SearchController
-        searchController.initialize(null, null);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
 
     public void getDetailData() throws IOException, URISyntaxException, org.json.simple.parser.ParseException {
         if (item == null) {
@@ -77,6 +65,13 @@ public class DetailController {
     public void initialize() throws CsvValidationException, IOException, ParseException, URISyntaxException,
             org.json.simple.parser.ParseException {
         getDetailData();
+        returnButton.setOnAction(event -> {
+            try {
+                SwitchController.returnSearchPage(this, event, this.seachPageBeforeGo,this.searchText);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void setItem(Item item) {
@@ -87,5 +82,10 @@ public class DetailController {
     }
     void setSearchQueryReturn(String searchText){
         this.searchText = searchText;
+    }
+
+    @Override
+    public TextField getSearchField() {
+        return null;
     }
 }

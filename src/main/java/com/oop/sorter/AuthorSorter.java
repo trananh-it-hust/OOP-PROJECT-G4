@@ -3,7 +3,6 @@ package com.oop.sorter;
 import com.oop.model.Item;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class AuthorSorter implements ISorter<Item> {

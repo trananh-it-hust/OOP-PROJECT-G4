@@ -7,16 +7,12 @@
 <?import javafx.scene.text.TextFlow?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.oop.controller.DetailController">
-   <children>
-      <Button layoutX="29.0" layoutY="20.0" mnemonicParsing="false" onAction="#returnSearchPage">
-         <graphic>
-            <ImageView fitHeight="19.0" fitWidth="17.0">
-               <image>
-                  <Image url="@../image/icons8-back-50.png" />
-               </image>
-            </ImageView>
-         </graphic>
-      </Button>
-      <TextFlow fx:id="contentBox" layoutX="29.0" layoutY="64.0" prefHeight="295.0" prefWidth="546.0" />
-   </children>
+   <Button fx:id="returnButton" layoutX="29.0" layoutY="20.0" mnemonicParsing="false">
+      <graphic>
+         <ImageView fitHeight="19.0" fitWidth="17.0">
+            <Image url="@../image/icons8-back-50.png" />
+         </ImageView>
+      </graphic>
+   </Button>
+   <TextFlow fx:id="contentBox" layoutX="29.0" layoutY="64.0" prefHeight="295.0" prefWidth="546.0" />
 </AnchorPane>
