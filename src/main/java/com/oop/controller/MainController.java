@@ -10,8 +10,6 @@ import javafx.scene.control.Button;
 import org.json.simple.parser.ParseException;
 
 import com.oop.model.APICaller;
-
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -22,11 +20,8 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class MainController extends BaseController {
 
@@ -42,7 +37,7 @@ public class MainController extends BaseController {
     @FXML
     private VBox suggestions;
     @FXML
-    private Button searchButton;
+    private Button searchContainer;
 
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
@@ -52,15 +47,12 @@ public class MainController extends BaseController {
             suggestionField.getChildren().add(suggestionLabel);
             suggestionField.setStyle(
                     "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
-            suggestionField.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    searchField.setText(suggestionLabel.getText());
-                    try {
-                        navigateToSearchResultsPage(event);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            suggestionField.setOnMouseClicked(event -> {
+                searchField.setText(suggestionLabel.getText());
+                try {
+                    SwitchController.goSearchPage(this, event);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
             suggestionField.setOnMouseEntered(new EventHandler<Event>() {
@@ -127,7 +119,7 @@ public class MainController extends BaseController {
             }
 
         });
-        searchButton.setOnAction(event -> {
+        searchContainer.setOnAction(event -> {
             try {
                 SwitchController.goSearchPage(this, event);
             } catch (IOException e) {
