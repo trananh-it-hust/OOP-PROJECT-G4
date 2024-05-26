@@ -2,6 +2,7 @@ package com.oop.controller;
 
 import com.oop.model.Item;
 import com.opencsv.exceptions.CsvValidationException;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -23,9 +24,9 @@ public class SwitchController {
 
     private static Parent root;
 
-    public static void goDetailPage(SearchController searchController,Event event, Item item, int pageNumber,String searchField)
+    public static void goDetailPage(BaseController baseController,Event event, Item item, int pageNumber,String searchField)
             throws IOException, CsvValidationException, java.text.ParseException, URISyntaxException, ParseException {
-        FXMLLoader loader = new FXMLLoader(searchController.getClass().getResource("/view/Detail.fxml"));
+        FXMLLoader loader = new FXMLLoader(baseController.getClass().getResource("/view/Detail.fxml"));
         root = loader.load();
         DetailController detailController = loader.getController();
         detailController.setItem(item);
@@ -37,17 +38,17 @@ public class SwitchController {
         stage.setScene(scene);
         stage.show();
     }
-    public static void goHomePage(SearchController searchController,Event event) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(searchController.getClass().getResource("/view/Main.fxml"))); //Đảm bảo đối tượng truyền vào không phải là null
+    public static void goHomePage(BaseController baseController ,Event event) throws IOException {
+        root = FXMLLoader.load(Objects.requireNonNull(baseController.getClass().getResource("/view/Main.fxml"))); //Đảm bảo đối tượng truyền vào không phải là null
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
-    public static void continueSearch(SearchController searchController,Event event) throws IOException {
-        String searchText = searchController.getSearchField().getText().trim();
+    public static void goSearchPage(BaseController baseController,Event event) throws IOException {
+        String searchText = baseController.getSearchField().getText().trim();
         if (!searchText.isEmpty()) {
-            FXMLLoader loader = new FXMLLoader(searchController.getClass().getResource("/view/SearchResults.fxml"));
+            FXMLLoader loader = new FXMLLoader(baseController.getClass().getResource("/view/SearchResults.fxml"));
             root = loader.load();
             SearchController searchControllerNew = loader.getController();
             searchControllerNew.setSearchText(searchText);
@@ -63,6 +64,18 @@ public class SwitchController {
             alert.setContentText("Please enter something in the search box before clicking search!");
             alert.showAndWait();
         }
+    }
+    public static void returnSearchPage(BaseController baseController,ActionEvent event,int pageNumber, String searchText) throws IOException {
+        FXMLLoader loader = new FXMLLoader(baseController.getClass().getResource("/view/SearchResults.fxml"));
+        Parent root = loader.load(); // Load content from SearchResults.fxml
+        SearchController searchController = loader.getController();
+        searchController.setSearchPage(pageNumber);
+        searchController.setSearchText(searchText); // Truyền nội dung sang SearchController
+        searchController.initialize(null, null);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
 }

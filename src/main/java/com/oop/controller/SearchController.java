@@ -14,11 +14,8 @@ import com.oop.sorter.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -34,11 +31,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.simple.parser.ParseException;
 
-public class SearchController implements Initializable {
+public class SearchController extends BaseController implements Initializable  {
 
     @FXML
     private TextField searchField;
-
+    @FXML
+    private Button prevPageButton;
+    @FXML
+    private Button nextPageButton;
     @FXML
     private VBox suggestions;
     @FXML
@@ -59,12 +59,6 @@ public class SearchController implements Initializable {
                     "Sort by title",
                     "Sort by date",
                     "Sort by author");
-
-//    private Stage stage;
-//
-//    private Scene scene;
-//
-//    private Parent root;
 
     private ArrayList<Item> searchResultList;
 
@@ -96,35 +90,6 @@ public class SearchController implements Initializable {
     }
 
 
-//    public void goHomePage(Event event) throws IOException {
-//        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Main.fxml"))); //Đảm bảo đối tượng truyền vào không phải là null
-//        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//        scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
-//    }
-
-//    public void continueSearch(Event event) throws IOException {
-//        String searchText = searchField.getText().trim();
-//        if (!searchText.isEmpty()) {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SearchResults.fxml"));
-//            root = loader.load();
-//            SearchController searchController = loader.getController();
-//            searchController.setSearchText(searchText);
-//            searchController.initialize(null, null);
-//            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//            scene = new Scene(root);
-//            stage.setScene(scene);
-//            stage.show();
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setTitle("Warning");
-//            alert.setHeaderText(null);
-//            alert.setContentText("Please enter something in the search box before clicking search!");
-//            alert.showAndWait();
-//        }
-//    }
-
     public void addSuggestions(List<String> suggestionsResult) throws IOException {
         suggestions.getChildren().clear();
         for (String suggestion : suggestionsResult) {
@@ -134,7 +99,7 @@ public class SearchController implements Initializable {
             suggestionField.setOnMouseClicked(event -> {
                 searchField.setText(suggestionLabel.getText());
                 try {
-                    SwitchController.continueSearch(this,event);
+                    SwitchController.goSearchPage(this,event);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -146,30 +111,12 @@ public class SearchController implements Initializable {
         suggestions.setCursor(Cursor.HAND);
     }
 
-    @FXML
-    private void nextPage() {
-        if (pageNumber < searchResultList.size() / totalResultsPerPage) {
-            pageNumber++;
-            addSearchResult(searchResultList);
-            currentPage.setText("Page: " + pageNumber);
-
-        }
-    }
-
-    @FXML
-    private void prevPage() {
-        if (pageNumber > 1) {
-            pageNumber--;
-            addSearchResult(searchResultList);
-            currentPage.setText("Page: " + pageNumber);
-        }
-    }
 
     private void addSearchResult(List<Item> itemList) {
         searchResults.getChildren().clear();
         int startIndex = totalResultsPerPage * (pageNumber - 1);
         int endIndex = Math.min(totalResultsPerPage * pageNumber, itemList.size());
-        VBox scrollableContent = new VBox(); // Tạo VBox để chứa nội dung cuộn
+        VBox scrollableContent = new VBox();
         for (int i = startIndex; i < endIndex; i++) {
             VBox itemNode = createItemNode(itemList.get(i));
             scrollableContent.getChildren().add(itemNode);
@@ -222,12 +169,11 @@ public class SearchController implements Initializable {
         searchField.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 try {
-                    SwitchController.continueSearch(this,event);
+                    SwitchController.goSearchPage(this,event);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                // Gợi ý tìm kiếm dựa trên nội dung của ô tìm kiếm
                 String searchQuery = searchField.getText();
                 try {
                     List<String> suggestionsResults = APICaller.querySuggest(searchQuery);
@@ -259,10 +205,25 @@ public class SearchController implements Initializable {
         });
         continueButton.setOnAction(event -> {
             try{
-                SwitchController.continueSearch(this,event);
+                SwitchController.goSearchPage(this,event);
             }
             catch (IOException e) {
                 e.printStackTrace();
+            }
+        });
+        nextPageButton.setOnAction(event -> {
+            if (pageNumber < searchResultList.size() / totalResultsPerPage) {
+                pageNumber++;
+                addSearchResult(searchResultList);
+                currentPage.setText("Page: " + pageNumber);
+
+            }
+        });
+        prevPageButton.setOnAction(event -> {
+            if (pageNumber > 1) {
+                pageNumber--;
+                addSearchResult(searchResultList);
+                currentPage.setText("Page: " + pageNumber);
             }
         });
     }
@@ -294,6 +255,7 @@ public class SearchController implements Initializable {
     public void setSearchPage(int pageBefore) {
         this.pageNumber = pageBefore;
     }
+    @Override
     public TextField getSearchField(){
         return this.searchField;
     }
