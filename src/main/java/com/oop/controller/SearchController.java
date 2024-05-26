@@ -166,7 +166,18 @@ public class SearchController extends BaseController implements Initializable {
                 e.printStackTrace();
             }
         });
-        VBox itemNode = new VBox(title, hyperlink, date, content, detailButton);
+        Button trendButton = new Button("Trend");
+        trendButton.setStyle("-fx-background-color: rgb(15, 76, 117); -fx-text-fill: rgb(187, 225, 250); -fx-font-weight: bold;");
+
+        trendButton.setOnAction(event -> {
+            try {
+                SwitchController.goTrendPage(this, event, item, this.pageNumber, this.searchField.getText());
+            } catch (IOException | CsvValidationException | java.text.ParseException | URISyntaxException |
+                     org.json.simple.parser.ParseException e) {
+                e.printStackTrace();
+            }
+        });
+        VBox itemNode = new VBox(title, hyperlink, date, content, detailButton,trendButton);
         itemNode.getStyleClass().add("itemNode");
         itemNode.setSpacing(5);
         itemNode.setPadding(new Insets(5));

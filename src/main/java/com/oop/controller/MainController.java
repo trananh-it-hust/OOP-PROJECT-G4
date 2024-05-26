@@ -25,8 +25,6 @@ import javafx.scene.layout.VBox;
 
 public class MainController extends BaseController {
 
-    private String searchQuery;
-
     private static final int IDLE_TIMEOUT = 500;
     private Timeline idleTimeline;
     private String lastSearchQuery;
@@ -62,13 +60,8 @@ public class MainController extends BaseController {
                             "-fx-background-color: #dae7f3;-fx-background-radius: 10px;-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 1px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
                 }
             });
-            suggestionField.setOnMouseExited(new EventHandler<Event>() {
-                @Override
-                public void handle(Event event) {
-                    suggestionField.setStyle(
-                            "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
-                }
-            });
+            suggestionField.setOnMouseExited((EventHandler<Event>) event -> suggestionField.setStyle(
+                    "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;"));
             suggestions.getChildren().add(suggestionField);
         }
         suggestions.setCursor(Cursor.HAND);
@@ -82,7 +75,7 @@ public class MainController extends BaseController {
         }
         lastSearchQuery = searchQuery;
         System.out.println("Searching for: " + searchQuery);
-        List<String> suggestionsResults = new ArrayList<String>();
+        List<String> suggestionsResults = new ArrayList<>();
         try {
             suggestionsResults = APICaller.querySuggest(searchQuery);
         } catch (URISyntaxException | IOException | ParseException e) {

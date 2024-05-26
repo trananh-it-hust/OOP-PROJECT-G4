@@ -39,7 +39,7 @@ public class APICaller {
         }
         List<Item> results = new ArrayList<>();
         StringBuffer jsonContent = connectAndGetRawData("GET",
-                "http://localhost:8000/search?byTitle=1&semanticSearch=0&q=", input);
+                "http://localhost:8000/search?byTitle=0&semanticSearch=0&q=", input);
         String s = jsonContent.toString().replace("NaN", "\"None\"");
         JSONObject jo = (JSONObject) new JSONParser().parse(s);
         JSONArray ja = (JSONArray) jo.get("results");

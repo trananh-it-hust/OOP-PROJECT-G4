@@ -77,5 +77,17 @@ public class SwitchController {
         stage.setScene(scene);
         stage.show();
     }
-
+    public static void goTrendPage(BaseController baseController, Event event,Item item, int pageNumber,String searchField) throws IOException, CsvValidationException, java.text.ParseException, URISyntaxException, ParseException {
+        FXMLLoader loader = new FXMLLoader(baseController.getClass().getResource("/view/Trend.fxml"));
+        root = loader.load();
+        TrendController trendController = loader.getController();
+        trendController.setItem(item);
+        trendController.initialize();
+        trendController.setPageNumberReturn(pageNumber);
+        trendController.setSearchQueryReturn(searchField);
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 }
