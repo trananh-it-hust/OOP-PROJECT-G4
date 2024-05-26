@@ -37,19 +37,15 @@
       </AnchorPane>
       <Button id="nextPage" layoutX="717.0" layoutY="554.0" mnemonicParsing="false" onAction="#nextPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" textFill="#d02323">
          <graphic>
-            <ImageView fitHeight="25.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../image/icons-next-page.png" />
-               </image>
+            <ImageView fitHeight="25.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+               <Image url="@../image/home-removebg-preview - Copy.png" />
             </ImageView>
          </graphic>
       </Button>
       <Button id="prevPage" layoutX="622.0" layoutY="554.0" mnemonicParsing="false" onAction="#prevPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;">
          <graphic>
             <ImageView fitHeight="24.0" fitWidth="24.0">
-               <image>
-                  <Image url="@../image/icons8-back-50.png" />
-               </image>
+               <Image url="@../image/icons8-search-64.png" />
             </ImageView>
          </graphic>
       </Button>
