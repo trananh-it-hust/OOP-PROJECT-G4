@@ -168,10 +168,6 @@ public class SearchController implements Initializable {
                             "-fx-background-color: rgb(15, 76, 117);-fx-text-fill: rgb(255, 255, 255);");
                 }
             });
-            suggestionField.setOnMouseEntered((EventHandler<Event>) event -> suggestionField
-                    .setStyle("-fx-border-color: #808080;-fx-background-color: #F0F8FF;"));
-            suggestionField.setOnMouseExited((EventHandler<Event>) event -> suggestionField
-                    .setStyle("-fx-border-color: transparent;-fx-background-color: transparent;"));
             suggestions.getChildren().add(suggestionField);
         }
         suggestions.setCursor(Cursor.HAND);
@@ -222,10 +218,16 @@ public class SearchController implements Initializable {
         title.getStyleClass().add("title");
         //
         String dateTimeString = item.getCreationDate().toString();
-        DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, originalFormatter);
-        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        String formattedDate = dateTime.format(newFormatter);
+        String formattedDate;
+        if (!dateTimeString.equals("None")) {
+            // Thực hiện phân tích ngày tháng chỉ khi chuỗi không phải là 'None'
+            DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, originalFormatter);
+            DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            formattedDate = dateTime.format(newFormatter);
+        } else {
+            formattedDate = "None";
+        }
         Text date = new Text("" + formattedDate);
         date.getStyleClass().add("date");
         //

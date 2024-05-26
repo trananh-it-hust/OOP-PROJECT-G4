@@ -13,7 +13,6 @@
       <AnchorPane prefHeight="62.0" prefWidth="800.0" style="-fx-background-color: rgb(187, 225, 250);">
          <children>
             <Button contentDisplay="CENTER" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goHomePage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #74B4DC;">
-               <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="447.0" layoutY="29.0" prefHeight="25.0" prefWidth="99.0" />
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -34,7 +33,6 @@
             </Button>
             <Text fx:id="categoryText" layoutX="607.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
             <ChoiceBox id="categorySort" fx:id="categorySort" layoutX="641.0" layoutY="18.0" prefWidth="150.0" />
-            <TextField fx:id="searchField" layoutX="74.0" layoutY="25.0" prefHeight="32.0" prefWidth="203.0" />
          </children>
       </AnchorPane>
       <Button id="nextPage" layoutX="717.0" layoutY="554.0" mnemonicParsing="false" onAction="#nextPage" prefHeight="32.0" prefWidth="40.0" style="-fx-background-color: #00a8a8;" textFill="#d02323">

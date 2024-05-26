@@ -98,10 +98,6 @@ public class MainController {
                             "-fx-padding:5px;-fx-font-size: 15px;-fx-border-color: rgb(15, 76,117);-fx-border-width: 0px 0px 1px 0px;-fx-border-radius: 0px 0px 10px 10px;");
                 }
             });
-            suggestionField.setOnMouseEntered((EventHandler<Event>) event -> suggestionField
-                    .setStyle("-fx-border-color: #808080;-fx-background-color: #F0F8FF;"));
-            suggestionField.setOnMouseExited((EventHandler<Event>) event -> suggestionField
-                    .setStyle("-fx-border-color: transparent;-fx-background-color: transparent;"));
             suggestions.getChildren().add(suggestionField);
         }
         suggestions.setCursor(Cursor.HAND);
